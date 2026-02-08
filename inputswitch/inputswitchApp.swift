@@ -1,32 +1,43 @@
-//
-//  inputswitchApp.swift
-//  inputswitch
-//
-//  Created by 苏卫东 on 2026/2/8.
-//
-
 import SwiftUI
-import SwiftData
 
 @main
 struct inputswitchApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @State private var loginItemManager = LoginItemManager()
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra("inputswitch", image: "StatusBarIcon") {
+            Button(loginItemManager.isEnabled ? "✓ Launch at Login" : "  Launch at Login") {
+                loginItemManager.toggle()
+            }
+            Divider()
+            SettingsLink {
+                Text("Preferences...")
+            }
+            .keyboardShortcut(",", modifiers: .command)
+            Divider()
+            Button("Quit") {
+                NSApplication.shared.terminate(nil)
+            }
+            .keyboardShortcut("q", modifiers: .command)
         }
-        .modelContainer(sharedModelContainer)
+
+        Settings {
+            TabView {
+                GeneralSettingsView()
+                    .tabItem {
+                        Label("General", systemImage: "gear")
+                    }
+                AppearanceSettingsView()
+                    .tabItem {
+                        Label("Appearance", systemImage: "paintbrush")
+                    }
+                AboutView()
+                    .tabItem {
+                        Label("About", systemImage: "info.circle")
+                    }
+            }
+            .frame(minWidth: 500, minHeight: 400)
+        }
     }
 }
