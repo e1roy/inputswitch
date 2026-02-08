@@ -2,7 +2,7 @@
 
 一个 macOS 菜单栏应用，提供便捷的输入法切换和可视化 HUD 提示。
 
-> 本项目灵感来自 [isHUD](https://github.com/ghawgang/isHUD)，使用 Swift 进行重写。
+> 本项目灵感来自 [isHUD](https://github.com/ghawkgu/isHUD)，使用 Swift 进行重写。
 
 ## 功能特点
 
