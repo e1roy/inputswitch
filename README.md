@@ -53,9 +53,51 @@ inputswitch/
 └── Assets.xcassets/          # 图标资源
 ```
 
+## 发布打包
+
+打包为 DMG 文件（用于 GitHub Release）：
+
+```bash
+./build-dmg.sh
+```
+
+脚本会：
+1. 编译 **Universal Binary**（同时支持 Apple Silicon ARM64 和 Intel x86_64）
+2. 创建带 Applications 快捷方式的 DMG 文件
+3. 设置美观的窗口布局
+4. 输出到 `dist/inputswitch-YYYYMMDD.dmg`
+
+**架构支持：**
+- ✅ Apple Silicon (M1/M2/M3) - arm64
+- ✅ Intel Mac - x86_64
+
 ## 构建
 
+### 方式一：使用 Xcode
+
 使用 Xcode 打开 `inputswitch.xcodeproj` 并构建运行。
+
+### 方式二：使用命令行
+
+项目提供了 `start.sh` 脚本，可以一键编译、安装并运行：
+
+```bash
+./start.sh
+```
+
+该脚本会：
+1. 使用 `xcodebuild` 编译项目（Debug 配置）
+2. 将生成的 `inputswitch.app` 复制到 `/Applications`
+3. 启动应用
+
+或者手动编译：
+
+```bash
+xcodebuild -project inputswitch.xcodeproj \
+    -scheme inputswitch \
+    -configuration Release \
+    build
+```
 
 ## 许可证
 
