@@ -11,10 +11,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         hudController = HUDWindowController(colorManager: colorManager)
 
-        // Setup HUD size based on longest input source name
-        let longestName = inputSourceMonitor.longestInputSourceName()
-        hudController.setupHUDSize(longestName: longestName)
-
         // Record all currently known input sources
         for name in inputSourceMonitor.allKeyboardInputSourceNames() {
             colorManager.recordInputSource(name)
@@ -30,8 +26,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Enabled sources changed callback
         inputSourceMonitor.onEnabledSourcesChanged = { [weak self] in
             guard let self = self else { return }
-            let longestName = self.inputSourceMonitor.longestInputSourceName()
-            self.hudController.setupHUDSize(longestName: longestName)
+            // Re-record sources so color manager stays current
+            for name in self.inputSourceMonitor.allKeyboardInputSourceNames() {
+                self.colorManager.recordInputSource(name)
+            }
         }
 
         // Hot key show HUD callback (Fn double-tap)
@@ -63,8 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func screenParametersChanged() {
-        let longestName = inputSourceMonitor.longestInputSourceName()
-        hudController.setupHUDSize(longestName: longestName)
+        // No action needed; HUD size is computed per-show now.
     }
 
     private func registerDefaults() {

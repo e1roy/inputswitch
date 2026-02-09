@@ -5,7 +5,6 @@ final class HUDWindowController {
     private var panel: HUDPanel?
     private var hostingView: NSHostingView<HUDContentView>?
     private var fadeOutTimer: Timer?
-    private var panelWidth: CGFloat = 200
     /// Incremented each time showHUD is called; fade-out completion checks
     /// this to avoid hiding a newer HUD.
     private var showGeneration: UInt = 0
@@ -19,12 +18,13 @@ final class HUDWindowController {
         self.colorManager = colorManager
     }
 
-    func setupHUDSize(longestName: String) {
+    private static func widthForName(_ name: String, hasIcon: Bool) -> CGFloat {
         let font = NSFont.systemFont(ofSize: HUDConstants.fontSize, weight: .medium)
         let attrs: [NSAttributedString.Key: Any] = [.font: font]
-        let textSize = (longestName as NSString).size(withAttributes: attrs)
-        panelWidth = textSize.width + HUDConstants.iconSize + 12 + HUDConstants.horizontalMargin * 2 + 20
-        panelWidth = max(panelWidth, 200)
+        let textSize = (name as NSString).size(withAttributes: attrs)
+        let iconWidth = hasIcon ? HUDConstants.iconSize + 12 : 0
+        let width = textSize.width + iconWidth + HUDConstants.horizontalMargin * 2 + 20
+        return max(width, 200)
     }
 
     func showHUD(name: String, iconURL: URL?) {
@@ -51,8 +51,11 @@ final class HUDWindowController {
             backgroundOpacity: Double(alpha)
         )
 
+        // Calculate panel width based on the current input source name
+        let currentWidth = Self.widthForName(name, hasIcon: iconURL != nil)
+
         if panel == nil {
-            let rect = NSRect(x: 0, y: 0, width: panelWidth, height: HUDConstants.panelHeight)
+            let rect = NSRect(x: 0, y: 0, width: currentWidth, height: HUDConstants.panelHeight)
             panel = HUDPanel(contentRect: rect)
         }
 
@@ -63,10 +66,10 @@ final class HUDWindowController {
             hostingView?.rootView = contentView
         }
 
-        let frame = NSRect(x: 0, y: 0, width: panelWidth, height: HUDConstants.panelHeight)
+        let frame = NSRect(x: 0, y: 0, width: currentWidth, height: HUDConstants.panelHeight)
         panel?.setFrame(frame, display: false)
 
-        positionOnMouseScreen()
+        positionOnActiveScreen()
 
         // Cancel any running animation and reset position/alpha
         panel?.contentView?.layer?.removeAllAnimations()
@@ -83,9 +86,15 @@ final class HUDWindowController {
 
     // MARK: - Positioning
 
-    private func positionOnMouseScreen() {
-        let mouseLocation = NSEvent.mouseLocation
-        let screen = NSScreen.screens.first(where: { NSMouseInRect(mouseLocation, $0.frame, false) }) ?? NSScreen.main
+    private func positionOnActiveScreen() {
+        // Prefer the screen that has keyboard focus (NSScreen.main), which
+        // correctly follows Space / fullscreen switches even when the mouse
+        // cursor stays on another physical display.  Fall back to the screen
+        // under the mouse cursor, then to the primary display.
+        let screen: NSScreen? = NSScreen.main ?? {
+            let mouseLocation = NSEvent.mouseLocation
+            return NSScreen.screens.first(where: { NSMouseInRect(mouseLocation, $0.frame, false) })
+        }() ?? NSScreen.screens.first
 
         guard let screen = screen, let panel = panel else { return }
 

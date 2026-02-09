@@ -20,7 +20,7 @@ struct HUDContentView: View {
                 .lineLimit(1)
         }
         .padding(.horizontal, HUDConstants.horizontalMargin)
-        .frame(height: HUDConstants.panelHeight)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             RoundedRectangle(cornerRadius: HUDConstants.cornerRadius)
                 .fill(backgroundColor.opacity(backgroundOpacity))
