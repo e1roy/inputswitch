@@ -66,6 +66,9 @@ fastlane/test_output
 *.dSYM.zip
 *.dSYM
 
+# Distribution
+dist/
+
 # Archives
 *.xcarchive
 
