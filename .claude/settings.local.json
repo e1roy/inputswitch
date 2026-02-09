@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(gh --version)",
+      "Bash(gh auth:*)",
+      "Bash(./build-dmg.sh:*)",
+      "Bash(gh release create:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "WebFetch(domain:github.com)",
+      "Bash(npx --version)",
+      "Bash(npx skills add:*)",
+      "Bash(bash:*)",
+      "Bash(echo:*)",
+      "Bash(EXIT_CODE=$?)",
+      "Bash(osascript:*)",
+      "Bash(defaults:*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/stop-notify.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
