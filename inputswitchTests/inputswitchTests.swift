@@ -1,4 +1,5 @@
 import Foundation
+import Observation
 import Testing
 @testable import inputswitch
 
@@ -105,5 +106,75 @@ struct HUDTintTests {
 
     @Test func faintTintsKeepLightText() {
         #expect(!HUDTint(red: 1, green: 1, blue: 1, opacity: 0.2).prefersDarkForeground)
+    }
+}
+
+// MARK: - Switch-path retention guards
+
+private final class ObservationChangeCounter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var count = 0
+
+    func increment() {
+        lock.withLock { count += 1 }
+    }
+
+    var value: Int {
+        lock.withLock { count }
+    }
+}
+
+@MainActor
+struct MenuBarObservationTests {
+    private let abc = InputSource(id: "com.apple.keylayout.ABC", name: "ABC", iconURL: nil, iconIsTemplate: false)
+    private let pinyin = InputSource(
+        id: "com.tencent.inputmethod.wetype.pinyin",
+        name: "WeType",
+        iconURL: nil,
+        iconIsTemplate: false
+    )
+
+    @Test func menuSnapshotDoesNotObserveCurrentChanges() {
+        let service = InputSourceService()
+        service.updateCurrent(abc)
+        let changes = ObservationChangeCounter()
+
+        withObservationTracking {
+            _ = service.currentIDForMenu
+        } onChange: {
+            changes.increment()
+        }
+        service.updateCurrent(pinyin)
+
+        #expect(changes.value == 0)
+        #expect(service.currentIDForMenu == pinyin.id)
+    }
+
+    @Test func settingsStillObserveCurrentChanges() {
+        let service = InputSourceService()
+        service.updateCurrent(abc)
+        let changes = ObservationChangeCounter()
+
+        withObservationTracking {
+            _ = service.current
+        } onChange: {
+            changes.increment()
+        }
+        service.updateCurrent(pinyin)
+
+        #expect(changes.value == 1)
+    }
+}
+
+@MainActor
+struct SettingsWindowRetentionTests {
+    @Test func closingSettingsReleasesItsViewGraph() {
+        let coordinator = AppCoordinator(defaults: makeDefaults())
+        coordinator.showSettings()
+        #expect(coordinator.hasSettingsWindow)
+
+        coordinator.closeSettingsForTesting()
+
+        #expect(!coordinator.hasSettingsWindow)
     }
 }
