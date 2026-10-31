@@ -18,4 +18,4 @@ project.xcworkspace/xcshareddata/swiftpm/
 dist/
 
 # Claude Code: per-user settings
-.claude/settings.local.json
+.agents/settings.local.json
