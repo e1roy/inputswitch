@@ -5,7 +5,6 @@ struct GeneralSettingsView: View {
 
     private var settings: AppSettings { coordinator.settings }
     private var loginItem: LoginItemService { coordinator.loginItem }
-    private var accessibility: AccessibilityPermission { coordinator.accessibility }
 
     var body: some View {
         @Bindable var settings = settings
@@ -13,16 +12,6 @@ struct GeneralSettingsView: View {
         Form {
             Section {
                 StatusHeader(coordinator: coordinator)
-            }
-
-            Section {
-                AccessibilityStatusRow(permission: accessibility)
-            } header: {
-                Text("Permissions")
-            } footer: {
-                if !accessibility.isTrusted {
-                    Text("macOS requires Accessibility access for InputSwitch to notice when you tap a modifier key. InputSwitch never records what you type.")
-                }
             }
 
             Section {
@@ -59,7 +48,7 @@ struct GeneralSettingsView: View {
                     Button("Quit", role: .destructive) { coordinator.quit() }
                 }
             } footer: {
-                Text("Input source switching and the HUD stop working until InputSwitch is opened again.")
+                Text("The HUD stops showing until InputSwitch is opened again.")
             }
         }
         .formStyle(.grouped)
@@ -99,53 +88,12 @@ private struct StatusHeader: View {
         .padding(.vertical, 6)
     }
 
-    @ViewBuilder
     private var statusLine: some View {
-        let settings = coordinator.settings
-        if !coordinator.accessibility.isTrusted {
-            Label("Waiting for Accessibility access", systemImage: "exclamationmark.triangle.fill")
-                .foregroundStyle(.orange)
-        } else if settings.switchShortcutEnabled {
-            Label {
-                Text("Tap \(Text(settings.switchKey.title)) \(settings.switchKey.symbol) to switch input source")
-            } icon: {
-                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-            }
-            .foregroundStyle(.secondary)
-        } else {
-            Label("Shortcut is off — HUD still shows on every switch", systemImage: "pause.circle.fill")
-                .foregroundStyle(.secondary)
+        Label {
+            Text("Shows the HUD whenever the input source changes")
+        } icon: {
+            Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
         }
-    }
-}
-
-struct AccessibilityStatusRow: View {
-    let permission: AccessibilityPermission
-
-    var body: some View {
-        LabeledContent {
-            if permission.isTrusted {
-                Label("Allowed", systemImage: "checkmark.circle.fill")
-                    .labelStyle(.titleAndIcon)
-                    .foregroundStyle(.green)
-            } else {
-                Button("Grant Access…") { permission.request() }
-                    .buttonStyle(.borderedProminent)
-            }
-        } label: {
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Accessibility")
-                    Text(permission.isTrusted
-                         ? "Keyboard shortcuts are active."
-                         : "Required for keyboard shortcuts.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            } icon: {
-                Image(systemName: "accessibility")
-                    .foregroundStyle(.tint)
-            }
-        }
+        .foregroundStyle(.secondary)
     }
 }

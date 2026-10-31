@@ -10,7 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillFinishLaunching(_ notification: Notification) {
-        launchedAsLoginItem = Self.detectLoginItemLaunch()
+        launchedAsLoginItem = detectLoginItemLaunch()
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -41,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         coordinator.stop()
     }
 
-    private static func detectLoginItemLaunch() -> Bool {
+    private func detectLoginItemLaunch() -> Bool {
         let event = NSAppleEventManager.shared().currentAppleEvent
         if event?.eventID == kAEOpenApplication,
            event?.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem {
@@ -49,7 +49,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         // `SMAppService` launches don't always carry the Apple Event marker;
         // treat a launch shortly after boot as a login launch when enabled.
-        let loginItemEnabled = LoginItemService().isEnabled
-        return loginItemEnabled && ProcessInfo.processInfo.systemUptime < 180
+        return coordinator.loginItem.isEnabled && ProcessInfo.processInfo.systemUptime < 180
     }
 }

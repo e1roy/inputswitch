@@ -10,28 +10,15 @@ enum HUDMetrics {
     static let shadowInset: CGFloat = 40
 }
 
-/// Timing constants for keyboard gesture recognition.
-enum GestureTiming {
-    /// Max delay between two Fn presses to count as a double-tap.
-    static let doubleTapInterval: TimeInterval = 0.35
-    /// A modifier held longer than this is treated as "held", not "tapped",
-    /// so it will not switch input source when released.
-    static let maximumSoloHoldDuration: TimeInterval = 0.8
-}
-
 enum AppLinks {
     static let repository = URL(string: "https://github.com/e1roy/inputswitch")!
     static let inspiration = URL(string: "https://github.com/ghawkgu/isHUD")!
-    static let accessibilitySettings = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
 }
 
 /// UserDefaults keys. Legacy keys keep their original names so existing
 /// user preferences survive the upgrade.
 enum DefaultsKey {
-    static let switchKey = "HotKeySwitchInputSource"
     static let hudDisplayDuration = "HudDisplayDuration"
-    static let switchShortcutEnabled = "SwitchShortcutEnabled"
-    static let fnDoubleTapEnabled = "FnDoubleTapEnabled"
     static let hudStyle = "HUDStyle"
     static let hudPosition = "HUDPosition"
     static let hudSize = "HUDSize"

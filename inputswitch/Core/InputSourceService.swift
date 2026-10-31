@@ -53,16 +53,6 @@ final class InputSourceService {
         current = Self.currentTISSource().flatMap { InputSource(tisSource: $0) }
     }
 
-    /// Selects the source after the current one, wrapping around.
-    func selectNext() {
-        let list = Self.enabledTISSources()
-        let ids = list.map { $0.string(for: kTISPropertyInputSourceID) ?? "" }
-        let currentID = Self.currentTISSource()?.string(for: kTISPropertyInputSourceID)
-        guard let nextID = Self.nextSourceID(after: currentID, in: ids),
-              let index = ids.firstIndex(of: nextID) else { return }
-        TISSelectInputSource(list[index])
-    }
-
     func select(id: String) {
         guard let source = Self.enabledTISSources().first(where: {
             $0.string(for: kTISPropertyInputSourceID) == id
@@ -77,14 +67,6 @@ final class InputSourceService {
         image.isTemplate = source.iconIsTemplate
         iconCache[source.id] = image
         return image
-    }
-
-    /// Pure helper: the ID that follows `currentID` in `ids`, wrapping around.
-    /// Falls back to the first ID if `currentID` is unknown.
-    static func nextSourceID(after currentID: String?, in ids: [String]) -> String? {
-        guard !ids.isEmpty else { return nil }
-        guard let currentID, let index = ids.firstIndex(of: currentID) else { return ids.first }
-        return ids[(index + 1) % ids.count]
     }
 
     // MARK: - Private

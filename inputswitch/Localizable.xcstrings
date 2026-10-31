@@ -1,34 +1,6 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "%@ %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ %2$@"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ %2$@"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ %2$@"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ %2$@"
-          }
-        }
-      }
-    },
     "About": {
       "localizations": {
         "en": {
@@ -53,62 +25,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "關於"
-          }
-        }
-      }
-    },
-    "About InputSwitch": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "About InputSwitch"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "InputSwitch について"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "关于 InputSwitch"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "關於 InputSwitch"
-          }
-        }
-      }
-    },
-    "Accessibility": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accessibility"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アクセシビリティ"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "辅助功能"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "輔助使用"
           }
         }
       }
@@ -141,30 +57,30 @@
         }
       }
     },
-    "Allowed": {
+    "Always know which input source you’re typing in.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Allowed"
+            "value": "Always know which input source you’re typing in."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "許可済み"
+            "value": "今どの入力ソースで入力しているかが、ひと目でわかります。"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "已允许"
+            "value": "随时知道自己正在用哪个输入法。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "已允許"
+            "value": "隨時知道自己正在使用哪個輸入法。"
           }
         }
       }
@@ -477,34 +393,6 @@
         }
       }
     },
-    "Double-tap Fn (🌐)": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Double-tap Fn (🌐)"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fn (🌐) をダブルタップ"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "连按两下 Fn (🌐)"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "按兩下 Fn (🌐)"
-          }
-        }
-      }
-    },
     "Enabled Input Sources": {
       "localizations": {
         "en": {
@@ -585,62 +473,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "GitHub"
-          }
-        }
-      }
-    },
-    "Grant Accessibility Access…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Grant Accessibility Access…"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アクセシビリティを許可…"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "授予辅助功能权限…"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "授予輔助使用權限…"
-          }
-        }
-      }
-    },
-    "Grant Access…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Grant Access…"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "許可…"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "授予权限…"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "授予權限…"
           }
         }
       }
@@ -757,34 +589,6 @@
         }
       }
     },
-    "Input source switching and the HUD stop working until InputSwitch is opened again.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Input source switching and the HUD stop working until InputSwitch is opened again."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "InputSwitch を再度開くまで、入力ソースの切り替えと HUD は動作しません。"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "退出后，快捷切换和 HUD 将停止工作，直到再次打开 InputSwitch。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "結束後，快速切換和 HUD 將停止運作，直到再次開啟 InputSwitch。"
-          }
-        }
-      }
-    },
     "Input Sources": {
       "localizations": {
         "en": {
@@ -897,34 +701,6 @@
         }
       }
     },
-    "Key": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Key"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キー"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "按键"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "按鍵"
-          }
-        }
-      }
-    },
     "Keyboard Settings…": {
       "localizations": {
         "en": {
@@ -949,34 +725,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "鍵盤設定…"
-          }
-        }
-      }
-    },
-    "Keyboard shortcuts are active.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keyboard shortcuts are active."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ショートカットは有効です。"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快捷键已生效。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快速鍵已生效。"
           }
         }
       }
@@ -1065,34 +813,6 @@
         }
       }
     },
-    "macOS requires Accessibility access for InputSwitch to notice when you tap a modifier key. InputSwitch never records what you type.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "macOS requires Accessibility access for InputSwitch to notice when you tap a modifier key. InputSwitch never records what you type."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "修飾キーのタップを検知するため、macOS のアクセシビリティ許可が必要です。InputSwitch が入力内容を記録することはありません。"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "macOS 需要辅助功能权限，InputSwitch 才能感知你轻按修饰键。InputSwitch 绝不会记录你输入的内容。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "macOS 需要輔助使用權限，InputSwitch 才能偵測你輕按修飾鍵。InputSwitch 絕不會記錄你輸入的內容。"
-          }
-        }
-      }
-    },
     "Medium": {
       "localizations": {
         "en": {
@@ -1117,34 +837,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "中"
-          }
-        }
-      }
-    },
-    "Next input source": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next input source"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "次の入力ソース"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "下一个输入法"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "下一個輸入法"
           }
         }
       }
@@ -1205,34 +897,6 @@
         }
       }
     },
-    "Permissions": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permissions"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アクセス許可"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "权限"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "權限"
-          }
-        }
-      }
-    },
     "Position": {
       "localizations": {
         "en": {
@@ -1257,34 +921,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "位置"
-          }
-        }
-      }
-    },
-    "Press and release the key on its own to move to the next input source. Shortcuts that use the key, like ⌘C, keep working as usual.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Press and release the key on its own to move to the next input source. Shortcuts that use the key, like ⌘C, keep working as usual."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "このキーだけを押して離すと、次の入力ソースに切り替わります。⌘C などのショートカットは通常どおり使えます。"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "单独按下并松开该键即可切换到下一个输入法。使用该键的组合快捷键（如 ⌘C）不受影响。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "單獨按下並放開該鍵即可切換到下一個輸入法。使用該鍵的組合快速鍵（如 ⌘C）不受影響。"
           }
         }
       }
@@ -1345,34 +981,6 @@
         }
       }
     },
-    "Required for keyboard shortcuts.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Required for keyboard shortcuts."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ショートカットに必要です。"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快捷键需要此权限。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快速鍵需要此權限。"
-          }
-        }
-      }
-    },
     "Reset to Default": {
       "localizations": {
         "en": {
@@ -1397,118 +1005,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "回復預設"
-          }
-        }
-      }
-    },
-    "Right Command": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Right Command"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Command"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Command"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Command"
-          }
-        }
-      }
-    },
-    "Right Control": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Right Control"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Control"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Control"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Control"
-          }
-        }
-      }
-    },
-    "Right Option": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Right Option"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Option"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Option"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Option"
-          }
-        }
-      }
-    },
-    "Right Shift": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Right Shift"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Shift"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Shift"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右 Shift"
           }
         }
       }
@@ -1565,90 +1061,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "設定…"
-          }
-        }
-      }
-    },
-    "Shortcut is off — HUD still shows on every switch": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shortcut is off — HUD still shows on every switch"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ショートカットはオフ — 切り替え時の HUD は表示されます"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快捷键已关闭 — 切换输入法时仍会显示 HUD"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快速鍵已關閉 — 切換輸入法時仍會顯示 HUD"
-          }
-        }
-      }
-    },
-    "Shortcuts": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shortcuts"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ショートカット"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快捷键"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "快速鍵"
-          }
-        }
-      }
-    },
-    "Show Current Input Source": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show Current Input Source"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "現在の入力ソースを表示"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "显示当前输入法"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "顯示目前輸入法"
           }
         }
       }
@@ -1765,30 +1177,30 @@
         }
       }
     },
-    "Shows the HUD for the current input source.": {
+    "Shows the HUD whenever the input source changes": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shows the HUD for the current input source."
+            "value": "Shows the HUD whenever the input source changes"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "現在の入力ソースの HUD を表示します。"
+            "value": "入力ソースが切り替わるたびに HUD を表示します"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "显示当前输入法的 HUD。"
+            "value": "切换输入法时显示 HUD"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "顯示目前輸入法的 HUD。"
+            "value": "切換輸入法時顯示 HUD"
           }
         }
       }
@@ -1933,142 +1345,30 @@
         }
       }
     },
-    "Switch Input Source": {
+    "The HUD stops showing until InputSwitch is opened again.": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Switch Input Source"
+            "value": "The HUD stops showing until InputSwitch is opened again."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "入力ソースの切り替え"
+            "value": "InputSwitch を再度開くまで HUD は表示されません。"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "切换输入法"
+            "value": "再次打开 InputSwitch 之前，HUD 将不再显示。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "切換輸入法"
-          }
-        }
-      }
-    },
-    "Switch input sources with a single key tap, and always know which one you’re typing in.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Switch input sources with a single key tap, and always know which one you’re typing in."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キーをひと押しで入力ソースを切り替え、今どの入力ソースかがひと目でわかります。"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "轻按一个键即可切换输入法，并随时知道自己正在用哪个输入法。"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "輕按一個鍵即可切換輸入法，並隨時知道自己正在使用哪個輸入法。"
-          }
-        }
-      }
-    },
-    "Switch with %@ %@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Switch with %1$@ %2$@"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ %2$@ で切り替え"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "用 %1$@ %2$@ 切换"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "用 %1$@ %2$@ 切換"
-          }
-        }
-      }
-    },
-    "Tap %@ %@ to switch input source": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tap %1$@ %2$@ to switch input source"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ %2$@ をタップして入力ソースを切り替え"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "轻按 %1$@ %2$@ 切换输入法"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "輕按 %1$@ %2$@ 切換輸入法"
-          }
-        }
-      }
-    },
-    "Tap a modifier key to switch": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tap a modifier key to switch"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "修飾キーのタップで切り替え"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "轻按修饰键切换"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "輕按修飾鍵切換"
+            "value": "再次打開 InputSwitch 之前，HUD 將不再顯示。"
           }
         }
       }
@@ -2181,34 +1481,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "版本 %1$@ (%2$@)"
-          }
-        }
-      }
-    },
-    "Waiting for Accessibility access": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Waiting for Accessibility access"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アクセシビリティの許可を待っています"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "等待辅助功能授权"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "等待輔助使用授權"
           }
         }
       }

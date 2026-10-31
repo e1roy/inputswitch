@@ -1,136 +1,209 @@
 # InputSwitch
 
-一个 macOS 菜单栏应用，提供便捷的输入法切换和可视化 HUD 提示。
+**English** | [简体中文](README.zh-CN.md)
 
-> 本项目灵感来自 [isHUD](https://github.com/ghawkgu/isHUD)，使用 Swift 进行重写。
+A lightweight macOS menu bar app that shows a Liquid Glass HUD whenever your input source changes, so you always know which one is active. Built for anyone who flips between languages all day and wants to stop guessing what will come out of the keyboard.
 
-## 功能特点
+> Inspired by [isHUD](https://github.com/ghawkgu/isHUD), rewritten from scratch in Swift.
 
-- **一键切换输入法**：单独轻按右 Command / Option / Shift / Control（可选）切换到下一个输入法；⌘C 等组合键不受影响，按住过久或中途点击鼠标不会误触发
-- **Liquid Glass HUD**：切换时在当前屏幕显示输入法图标和名称，支持液态玻璃 / 纯色样式、三种大小、顶部 / 居中 / 底部位置；液态玻璃会跟随 macOS 27 的“外观”玻璃透明度设置（设计规范对照见 [docs/design-macos27.md](docs/design-macos27.md)）
-- **按输入法着色**：为每个输入法单独设置 HUD 颜色和浓度，设置页带实时壁纸预览
-- **Fn 双击显示**：连按两下 Fn (🌐) 显示当前输入法
-- **点击图标打开设置**：从“应用程序”、启动台或聚焦搜索打开 InputSwitch，即可显示设置窗口
-- **权限引导**：自动检测辅助功能权限，并一键跳转到系统设置授权
-- **菜单栏**：快速选择输入法、开关快捷键；也可以隐藏菜单栏图标
-- **开机启动**、多语言（简体中文 / 繁體中文 / 日本語 / English）
+<p align="center">
+  <img src="images/image_abc.png" width="420" alt="HUD showing the ABC input source in Liquid Glass style">
+  <img src="images/image_wx.png" width="420" alt="HUD showing WeChat Input with a custom green tint">
+</p>
 
-<img src="images/image.png" width="400" alt="HUD 效果预览">
+## Contents
 
-## 使用方法
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Settings](#settings)
+- [Building from Source](#building-from-source)
+- [Architecture](#architecture)
+- [Releasing](#releasing)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
 
-1. **首次打开**：按提示在“系统设置 › 隐私与安全性 › 辅助功能”中允许 InputSwitch（用于检测修饰键轻按）
-2. **切换输入法**：单独按下并松开右 Command 键（可在“快捷键”页面更换）
-3. **显示当前输入法**：快速连按两下 Fn 键
-4. **打开设置**：点击菜单栏图标选择“设置…”，或再次打开 InputSwitch 应用
+## Key Features
 
-## 系统要求
+- **Liquid Glass HUD**: shows the input source icon and name on the active screen. Choose Liquid Glass or Solid style, three sizes (Small / Medium / Large), and three positions (Top / Center / Bottom). On macOS 26+ the glass follows the system's glass transparency setting; older systems fall back to a material background.
+- **Per-source colors**: give each input source its own HUD tint and intensity, with a live wallpaper preview in Settings.
+- **Menu bar menu**: pick an input source directly or open Settings. The menu bar icon can be hidden.
+- **No special permissions**: InputSwitch only listens for the system's input source change notification, so it needs no Accessibility access.
+- **Launch at login**, and localized into English, 简体中文, 繁體中文, and 日本語.
 
-- macOS 15.7 或更高版本（macOS 26 及以上使用 Liquid Glass 效果）
+## Installation
 
-## 技术栈
+### Requirements
 
-- Swift 6（严格并发检查）、SwiftUI + Observation
-- AppKit（NSPanel HUD、设置窗口）
-- Carbon TIS API（输入法读取与切换）
-- Swift Testing 单元测试
+- macOS 15.7 or later (Liquid Glass requires macOS 26 or later)
+- Apple Silicon or Intel Mac (the release build is a universal binary)
 
-## 项目结构
+### Download
 
-```
-inputswitch/
-├── App/
-│   ├── InputSwitchApp.swift      # @main，菜单栏 Scene
-│   ├── AppDelegate.swift         # 生命周期；点击 App 图标时打开设置
-│   └── AppCoordinator.swift      # 组合根：创建并连接所有服务
-├── Core/
-│   ├── AppSettings.swift         # 用户偏好（@Observable + UserDefaults）
-│   ├── InputSourceService.swift  # 输入法读取、监听、切换（TIS）
-│   ├── KeyGestures.swift         # 单独轻按 / 双击识别（纯逻辑，可测试）
-│   ├── HotKeyMonitor.swift       # NSEvent 全局监听 → 手势识别
-│   ├── HUDAppearanceStore.swift  # 按输入法 ID 保存 HUD 颜色（含旧数据迁移）
-│   ├── AccessibilityPermission.swift # 辅助功能权限检测
-│   └── LoginItemService.swift    # 开机启动
-├── HUD/
-│   ├── HUDView.swift             # HUD 卡片（Liquid Glass / 纯色）
-│   ├── HUDPanel.swift            # 悬浮、不抢焦点的 NSPanel
-│   └── HUDController.swift       # 显示位置与动画
-├── Settings/                     # 侧边栏式设置窗口
-│   ├── SettingsWindowController.swift
-│   ├── SettingsView.swift
-│   ├── GeneralSettingsView.swift
-│   ├── ShortcutsSettingsView.swift
-│   ├── HUDSettingsView.swift
-│   ├── InputSourcesSettingsView.swift
-│   ├── HUDPreview.swift
-│   └── AboutView.swift
-├── MenuBar/MenuBarContent.swift  # 菜单栏菜单
-├── Support/Constants.swift
-└── Localizable.xcstrings
-```
+1. Download the latest `inputswitch-X.Y.Z.dmg` from [GitHub Releases](https://github.com/e1roy/inputswitch/releases).
+2. Open the DMG and drag **inputswitch** into **Applications**.
+3. Launch it. The Settings window opens on first launch.
 
-## 发布打包
+The DMG is not notarized. If macOS refuses to open it, see [Troubleshooting](#app-cant-be-opened-after-download).
 
-推送 `vX.Y.Z` 格式的 tag 即可触发 GitHub Actions（[.github/workflows/release.yml](.github/workflows/release.yml)）自动打包 DMG 并发布 GitHub Release：
+## Usage
 
-```bash
-git tag -a v0.0.3 -m "InputSwitch v0.0.3"
-git push origin v0.0.3
-```
+1. **Switch input source** the way you normally do (for example with the system's ⌃Space or 🌐 shortcut, or from the menu bar). The HUD appears on the active screen.
+2. **Open Settings**: click the menu bar icon and choose **Settings…** (⌘,), or open InputSwitch again from Applications, Launchpad, or Spotlight. This also works when the menu bar icon is hidden.
 
-本地打包为 DMG 文件：
+## Settings
+
+Settings uses a sidebar with four pages:
+
+| Page | What you can configure |
+|------|------------------------|
+| General | Launch at login, show/hide the menu bar icon |
+| HUD | Style (Liquid Glass / Solid), size, position, show icon, display duration (0.1–1.0 s, default 0.8 s), and a **Show on Screen** preview |
+| Input Sources | Per-source tint color and intensity, with a live preview |
+| About | Version and links |
+
+Preferences are stored in `UserDefaults`. Per-source colors are keyed by the input source ID (`HUDTintsBySourceID`), so they survive renames and system language changes. Colors saved by older versions, which were keyed by name, are migrated automatically.
+
+## Building from Source
+
+### Prerequisites
+
+- Xcode with the macOS 26 SDK or later (the project uses Swift 6 and Liquid Glass APIs)
+- If `xcode-select` points at the Command Line Tools, prefix `xcodebuild` commands with `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`. `start.sh` does this for you.
+
+### Clone
 
 ```bash
-./build-dmg.sh
+git clone https://github.com/e1roy/inputswitch.git
+cd inputswitch
 ```
 
-脚本会：
-1. 编译 **Universal Binary**（同时支持 Apple Silicon ARM64 和 Intel x86_64）
-2. 创建带 Applications 快捷方式的 DMG 文件
-3. 设置美观的窗口布局
-4. 输出到 `dist/inputswitch-YYYYMMDD.dmg`
-
-**架构支持：**
-- ✅ Apple Silicon (M1/M2/M3) - arm64
-- ✅ Intel Mac - x86_64
-
-## 构建
-
-### 方式一：使用 Xcode
-
-使用 Xcode 打开 `inputswitch.xcodeproj` 并构建运行。
-
-### 方式二：使用命令行
-
-项目提供了 `start.sh` 脚本，可以一键编译、安装并运行：
+### Build, install, and run
 
 ```bash
 ./start.sh
 ```
 
-该脚本会（可重复执行）：
-1. 使用 `xcodebuild` 编译最新代码（Release 配置）
-2. 退出正在运行的 InputSwitch 和旧版 isHUD
-3. 卸载 isHUD（应用、登录项、偏好设置）
-4. 用新版本替换 `/Applications/inputswitch.app`，并在 LaunchServices 中注销其他位置的旧副本，确保 Spotlight / 启动台打开的是新版
-5. 启动应用
+You can run this script as often as you like. It:
 
-运行单元测试：
+1. Builds a Release configuration with `xcodebuild`
+2. Quits any running InputSwitch and the legacy isHUD app
+3. Removes isHUD (app, login item, preferences) if present
+4. Replaces `/Applications/inputswitch.app` and unregisters stale copies from LaunchServices, so Spotlight and Launchpad open the new build
+5. Launches the app
+
+> **Note:** `start.sh` deletes the isHUD app and its preferences. Skip it and use Xcode if you want to keep isHUD.
+
+Alternatively, open `inputswitch.xcodeproj` in Xcode and run the `inputswitch` scheme.
+
+### Build only
+
+```bash
+xcodebuild -project inputswitch.xcodeproj \
+    -scheme inputswitch \
+    -configuration Debug \
+    build
+```
+
+### Run tests
+
+The unit tests use Swift Testing and cover settings persistence, HUD tint contrast, and color migration:
 
 ```bash
 xcodebuild test -project inputswitch.xcodeproj -scheme inputswitch \
     -destination 'platform=macOS' -only-testing:inputswitchTests
 ```
 
-或者手动编译：
+### Scripts
 
-```bash
-xcodebuild -project inputswitch.xcodeproj \
-    -scheme inputswitch \
-    -configuration Release \
-    build
+| Script | Description |
+|--------|-------------|
+| `./start.sh` | Build Release, install to `/Applications`, remove isHUD, and launch |
+| `./build-dmg.sh` | Build a universal (arm64 + x86_64) DMG into `dist/` |
+
+## Architecture
+
+### Tech Stack
+
+- **Language**: Swift 6 (strict concurrency, default `MainActor` isolation)
+- **UI**: SwiftUI + Observation; AppKit for the HUD `NSPanel` and Settings window
+- **Input sources**: Carbon Text Input Sources (TIS) API
+- **Tests**: Swift Testing
+- **CI**: GitHub Actions (`macos-26` runner)
+
+### How it works
+
+`AppCoordinator` is the composition root. It creates every service and connects their callbacks. `AppDelegate` owns the coordinator and handles the app lifecycle.
+
+```
+InputSourceService ──selection changed──▶ HUDController
+AppSettings / HUDAppearanceStore ◀── Settings UI ; read by HUDController
 ```
 
-## 许可证
+1. TIS posts a distributed notification when the input source changes, and `InputSourceService` publishes the new selection.
+2. `HUDController` sizes, positions, and animates the `HUDPanel` on the active screen.
+
+### Directory Structure
+
+```
+inputswitch/
+├── App/
+│   ├── InputSwitchApp.swift          # @main, menu bar scene
+│   ├── AppDelegate.swift             # Lifecycle; reopening the app opens Settings
+│   └── AppCoordinator.swift          # Composition root
+├── Core/
+│   ├── AppSettings.swift             # @Observable preferences backed by UserDefaults
+│   ├── InputSourceService.swift      # TIS wrapper: list, observe, select
+│   ├── HUDAppearanceStore.swift      # Per-source tints keyed by ID, with legacy migration
+│   └── LoginItemService.swift        # Launch at login
+├── HUD/
+│   ├── HUDView.swift                 # HUDCard (Liquid Glass / Solid)
+│   ├── HUDPanel.swift                # Floating, non-activating NSPanel
+│   └── HUDController.swift           # Layout and animation
+├── Settings/                         # Sidebar Settings window and pages
+├── MenuBar/MenuBarContent.swift      # Menu bar dropdown
+├── Support/Constants.swift           # HUD metrics, links, UserDefaults keys
+└── Localizable.xcstrings             # en, zh-Hans, zh-Hant, ja
+```
+
+For the UI guidelines this project follows, see [docs/design-macos27.md](docs/design-macos27.md).
+
+## Releasing
+
+Pushing a tag of the form `vX.Y.Z` triggers [.github/workflows/release.yml](.github/workflows/release.yml), which builds the universal DMG and publishes a GitHub Release with the DMG and its SHA-256 checksum:
+
+```bash
+git tag -a v1.2.3 -m "InputSwitch v1.2.3"
+git push origin v1.2.3
+```
+
+To rebuild an existing tag, run the workflow manually from the Actions tab and pass the tag.
+
+To build a DMG locally:
+
+```bash
+VERSION=1.2.3 ./build-dmg.sh
+```
+
+- Output: `dist/inputswitch-<VERSION>.dmg`. Without `VERSION`, today's date (`YYYYMMDD`) is used.
+- A `VERSION` of the form `X.Y.Z` also sets `MARKETING_VERSION` in the app.
+- `CI=1` skips the Finder window styling, which needs a GUI session.
+- The script deletes `build/` and `dist/` before it starts.
+
+## Troubleshooting
+
+### App can't be opened after download
+
+Release builds are not notarized, so Gatekeeper may block them. Right-click the app and choose **Open**, or clear the quarantine flag:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/inputswitch.app
+```
+
+### Spotlight opens an old build
+
+Run `./start.sh`. It unregisters stale copies from LaunchServices. Release and DMG builds go into `*.noindex` folders so Spotlight doesn't index them.
+
+## License
 
 MIT License

@@ -28,7 +28,7 @@ struct AboutView: View {
                     .textSelection(.enabled)
             }
 
-            Text("Switch input sources with a single key tap, and always know which one you’re typing in.")
+            Text("Always know which input source you’re typing in.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: 360)

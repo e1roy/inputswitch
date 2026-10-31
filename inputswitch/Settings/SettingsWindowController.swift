@@ -11,8 +11,11 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
     private let navigation: SettingsNavigation
 
     init(coordinator: AppCoordinator) {
-        navigation = coordinator.navigation
-        let hostingController = NSHostingController(rootView: SettingsView(coordinator: coordinator))
+        let navigation = SettingsNavigation()
+        self.navigation = navigation
+        let hostingController = NSHostingController(
+            rootView: SettingsView(coordinator: coordinator, navigation: navigation)
+        )
         hostingController.sceneBridgingOptions = [.toolbars, .title]
         // The window manages its own size; letting SwiftUI drive window size
         // constraints from changing content (e.g. preview text) can loop.

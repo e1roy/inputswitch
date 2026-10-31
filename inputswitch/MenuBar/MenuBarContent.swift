@@ -4,12 +4,9 @@ import SwiftUI
 struct MenuBarContent: View {
     let coordinator: AppCoordinator
 
-    private var settings: AppSettings { coordinator.settings }
     private var inputSources: InputSourceService { coordinator.inputSources }
 
     var body: some View {
-        @Bindable var settings = settings
-
         Section("Input Source") {
             Picker("Input Source", selection: currentSourceBinding) {
                 ForEach(inputSources.sources) { source in
@@ -22,30 +19,12 @@ struct MenuBarContent: View {
 
         Divider()
 
-        Toggle(isOn: $settings.switchShortcutEnabled) {
-            Text("Switch with \(Text(settings.switchKey.title)) \(settings.switchKey.symbol)")
-        }
-        Button("Show Current Input Source") {
-            coordinator.showCurrentInputSource()
-        }
-
-        if !coordinator.accessibility.isTrusted {
-            Divider()
-            Button("Grant Accessibility Access…", systemImage: "exclamationmark.triangle") {
-                coordinator.showSettings(.general)
-                coordinator.accessibility.request()
-            }
-        }
-
-        Divider()
-
         Button("Settings…") { coordinator.showSettings() }
             .keyboardShortcut(",", modifiers: .command)
-        Button("About InputSwitch") { coordinator.showSettings(.about) }
 
         Divider()
 
-        Button("Quit InputSwitch") { coordinator.quit() }
+        Button("Quit") { coordinator.quit() }
             .keyboardShortcut("q", modifiers: .command)
     }
 

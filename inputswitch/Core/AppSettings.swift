@@ -68,10 +68,6 @@ enum HUDSize: String, CaseIterable, Identifiable, Sendable {
 /// User preferences, persisted to `UserDefaults` and observable by SwiftUI.
 @Observable
 final class AppSettings {
-    var switchShortcutEnabled: Bool { didSet { defaults.set(switchShortcutEnabled, forKey: DefaultsKey.switchShortcutEnabled) } }
-    var switchKey: SwitchKey { didSet { defaults.set(switchKey.rawValue, forKey: DefaultsKey.switchKey) } }
-    var fnDoubleTapEnabled: Bool { didSet { defaults.set(fnDoubleTapEnabled, forKey: DefaultsKey.fnDoubleTapEnabled) } }
-
     var hudStyle: HUDStyle { didSet { defaults.set(hudStyle.rawValue, forKey: DefaultsKey.hudStyle) } }
     var hudPosition: HUDPosition { didSet { defaults.set(hudPosition.rawValue, forKey: DefaultsKey.hudPosition) } }
     var hudSize: HUDSize { didSet { defaults.set(hudSize.rawValue, forKey: DefaultsKey.hudSize) } }
@@ -91,9 +87,6 @@ final class AppSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         defaults.register(defaults: [
-            DefaultsKey.switchShortcutEnabled: true,
-            DefaultsKey.switchKey: SwitchKey.rightCommand.rawValue,
-            DefaultsKey.fnDoubleTapEnabled: true,
             DefaultsKey.hudStyle: HUDStyle.glass.rawValue,
             DefaultsKey.hudPosition: HUDPosition.center.rawValue,
             DefaultsKey.hudSize: HUDSize.medium.rawValue,
@@ -102,9 +95,6 @@ final class AppSettings {
             DefaultsKey.showMenuBarIcon: true,
         ])
 
-        switchShortcutEnabled = defaults.bool(forKey: DefaultsKey.switchShortcutEnabled)
-        switchKey = SwitchKey(rawValue: defaults.integer(forKey: DefaultsKey.switchKey)) ?? .rightCommand
-        fnDoubleTapEnabled = defaults.bool(forKey: DefaultsKey.fnDoubleTapEnabled)
         hudStyle = defaults.string(forKey: DefaultsKey.hudStyle).flatMap(HUDStyle.init) ?? .glass
         hudPosition = defaults.string(forKey: DefaultsKey.hudPosition).flatMap(HUDPosition.init) ?? .center
         hudSize = defaults.string(forKey: DefaultsKey.hudSize).flatMap(HUDSize.init) ?? .medium

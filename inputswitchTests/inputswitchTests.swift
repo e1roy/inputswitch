@@ -2,146 +2,6 @@ import Foundation
 import Testing
 @testable import inputswitch
 
-// MARK: - Solo modifier tap
-
-@MainActor
-struct SoloModifierRecognizerTests {
-    private let key = SwitchKey.rightCommand
-    private var down: UInt { key.deviceMask | 0x100000 } // + device-independent ⌘ bit
-    private let up: UInt = 0
-
-    @Test func quickTapFires() {
-        var recognizer = SoloModifierRecognizer()
-        let pressed = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: down, timestamp: 1.0, target: key)
-        #expect(!pressed)
-        let released = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: up, timestamp: 1.1, target: key)
-        #expect(released)
-    }
-
-    @Test func keyPressInBetweenCancels() {
-        var recognizer = SoloModifierRecognizer()
-        _ = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: down, timestamp: 1.0, target: key)
-        recognizer.interrupt() // e.g. ⌘C
-        let pressed = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: up, timestamp: 1.1, target: key)
-        #expect(!pressed)
-    }
-
-    @Test func holdingTooLongDoesNotFire() {
-        var recognizer = SoloModifierRecognizer(maximumHoldDuration: 0.5)
-        _ = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: down, timestamp: 1.0, target: key)
-        let pressed = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: up, timestamp: 2.0, target: key)
-        #expect(!pressed)
-    }
-
-    @Test func otherModifierHeldAtPressDoesNotFire() {
-        var recognizer = SoloModifierRecognizer()
-        let withLeftShift = down | DeviceModifierMask.leftShift
-        _ = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: withLeftShift, timestamp: 1.0, target: key)
-        let pressed = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: DeviceModifierMask.leftShift, timestamp: 1.1, target: key)
-        #expect(!pressed)
-    }
-
-    @Test func otherModifierPressedDuringHoldCancels() {
-        var recognizer = SoloModifierRecognizer()
-        _ = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: down, timestamp: 1.0, target: key)
-        _ = recognizer.flagsChanged(keyCode: 56, rawFlags: down | DeviceModifierMask.leftShift, timestamp: 1.05, target: key)
-        _ = recognizer.flagsChanged(keyCode: 56, rawFlags: down, timestamp: 1.08, target: key)
-        let pressed = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: up, timestamp: 1.1, target: key)
-        #expect(!pressed)
-    }
-
-    @Test func leftCommandDoesNotTriggerRightCommand() {
-        var recognizer = SoloModifierRecognizer()
-        let leftDown = DeviceModifierMask.leftCommand | 0x100000
-        let pressed = recognizer.flagsChanged(keyCode: 55, rawFlags: leftDown, timestamp: 1.0, target: key)
-        #expect(!pressed)
-        let released = recognizer.flagsChanged(keyCode: 55, rawFlags: up, timestamp: 1.1, target: key)
-        #expect(!released)
-    }
-
-    @Test func releasingRightWhileLeftHeldDoesNotFire() {
-        var recognizer = SoloModifierRecognizer()
-        let both = down | DeviceModifierMask.leftCommand
-        _ = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: both, timestamp: 1.0, target: key)
-        let pressed = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: DeviceModifierMask.leftCommand | 0x100000, timestamp: 1.1, target: key)
-        #expect(!pressed)
-    }
-
-    @Test(arguments: SwitchKey.allCases)
-    func everySwitchKeyCanFire(_ target: SwitchKey) {
-        var recognizer = SoloModifierRecognizer()
-        _ = recognizer.flagsChanged(keyCode: target.keyCode, rawFlags: target.deviceMask, timestamp: 1.0, target: target)
-        let pressed = recognizer.flagsChanged(keyCode: target.keyCode, rawFlags: 0, timestamp: 1.1, target: target)
-        #expect(pressed)
-    }
-
-    @Test func interruptWithoutPressIsHarmless() {
-        var recognizer = SoloModifierRecognizer()
-        recognizer.interrupt()
-        _ = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: down, timestamp: 1.0, target: key)
-        let pressed = recognizer.flagsChanged(keyCode: key.keyCode, rawFlags: up, timestamp: 1.1, target: key)
-        #expect(pressed)
-    }
-}
-
-// MARK: - Double tap
-
-@MainActor
-struct DoubleTapRecognizerTests {
-    @Test func twoQuickPressesFire() {
-        var recognizer = DoubleTapRecognizer(interval: 0.35)
-        let first = recognizer.press(at: 1.0)
-        #expect(!first)
-        let second = recognizer.press(at: 1.2)
-        #expect(second)
-    }
-
-    @Test func slowPressesDoNotFire() {
-        var recognizer = DoubleTapRecognizer(interval: 0.35)
-        let first = recognizer.press(at: 1.0)
-        #expect(!first)
-        let second = recognizer.press(at: 1.5)
-        #expect(!second)
-    }
-
-    @Test func thirdPressStartsOver() {
-        var recognizer = DoubleTapRecognizer(interval: 0.35)
-        _ = recognizer.press(at: 1.0)
-        let first = recognizer.press(at: 1.1)
-        #expect(first)
-        let second = recognizer.press(at: 1.2)
-        #expect(!second)
-    }
-
-    @Test func resetCancelsPendingTap() {
-        var recognizer = DoubleTapRecognizer(interval: 0.35)
-        _ = recognizer.press(at: 1.0)
-        recognizer.reset()
-        let first = recognizer.press(at: 1.1)
-        #expect(!first)
-    }
-}
-
-// MARK: - Input source order
-
-@MainActor
-struct NextSourceTests {
-    @Test func advancesAndWraps() {
-        let ids = ["abc", "pinyin", "kana"]
-        #expect(InputSourceService.nextSourceID(after: "abc", in: ids) == "pinyin")
-        #expect(InputSourceService.nextSourceID(after: "kana", in: ids) == "abc")
-    }
-
-    @Test func unknownOrMissingCurrentFallsBackToFirst() {
-        #expect(InputSourceService.nextSourceID(after: "other", in: ["a", "b"]) == "a")
-        #expect(InputSourceService.nextSourceID(after: nil, in: ["a", "b"]) == "a")
-    }
-
-    @Test func emptyListHasNoNext() {
-        #expect(InputSourceService.nextSourceID(after: "a", in: []) == nil)
-    }
-}
-
 // MARK: - Persistence
 
 @MainActor
@@ -156,9 +16,6 @@ private func makeDefaults() -> UserDefaults {
 struct AppSettingsTests {
     @Test func defaultsAreSensible() {
         let settings = AppSettings(defaults: makeDefaults())
-        #expect(settings.switchShortcutEnabled)
-        #expect(settings.switchKey == .rightCommand)
-        #expect(settings.fnDoubleTapEnabled)
         #expect(settings.hudStyle == .glass)
         #expect(settings.hudPosition == .center)
         #expect(settings.showMenuBarIcon)
@@ -167,13 +24,11 @@ struct AppSettingsTests {
     @Test func changesPersist() {
         let defaults = makeDefaults()
         let settings = AppSettings(defaults: defaults)
-        settings.switchKey = .rightOption
         settings.hudStyle = .solid
         settings.hudSize = .large
         settings.showMenuBarIcon = false
 
         let reloaded = AppSettings(defaults: defaults)
-        #expect(reloaded.switchKey == .rightOption)
         #expect(reloaded.hudStyle == .solid)
         #expect(reloaded.hudSize == .large)
         #expect(!reloaded.showMenuBarIcon)
@@ -181,10 +36,8 @@ struct AppSettingsTests {
 
     @Test func readsLegacyKeys() {
         let defaults = makeDefaults()
-        defaults.set(SwitchKey.rightOption.rawValue, forKey: "HotKeySwitchInputSource")
         defaults.set(0.5, forKey: "HudDisplayDuration")
         let settings = AppSettings(defaults: defaults)
-        #expect(settings.switchKey == .rightOption)
         #expect(settings.hudDisplayDuration == 0.5)
     }
 

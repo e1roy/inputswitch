@@ -1,8 +1,7 @@
 import SwiftUI
 
-enum SettingsPage: String, CaseIterable, Identifiable, Hashable {
+enum SettingsPage: String, CaseIterable, Identifiable {
     case general
-    case shortcuts
     case hud
     case inputSources
     case about
@@ -12,7 +11,6 @@ enum SettingsPage: String, CaseIterable, Identifiable, Hashable {
     var title: LocalizedStringResource {
         switch self {
         case .general: "General"
-        case .shortcuts: "Shortcuts"
         case .hud: "HUD"
         case .inputSources: "Input Sources"
         case .about: "About"
@@ -22,7 +20,6 @@ enum SettingsPage: String, CaseIterable, Identifiable, Hashable {
     var symbol: String {
         switch self {
         case .general: "gearshape"
-        case .shortcuts: "command"
         case .hud: "capsule"
         case .inputSources: "globe"
         case .about: "info.circle"
@@ -30,8 +27,7 @@ enum SettingsPage: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
-/// Which Settings page is showing; owned by the coordinator so other parts of
-/// the app (menu bar, permissions prompt) can deep-link into a page.
+/// Which Settings page is showing. Shared by the sidebar and the window title.
 @Observable
 final class SettingsNavigation {
     var selection: SettingsPage? = .general
@@ -39,10 +35,9 @@ final class SettingsNavigation {
 
 struct SettingsView: View {
     let coordinator: AppCoordinator
+    @Bindable var navigation: SettingsNavigation
 
     var body: some View {
-        @Bindable var navigation = coordinator.navigation
-
         NavigationSplitView {
             List(SettingsPage.allCases, selection: $navigation.selection) { page in
                 // Plain symbols pick up the user's accent color and sidebar
@@ -68,7 +63,6 @@ struct SettingsView: View {
     private func detail(for page: SettingsPage) -> some View {
         switch page {
         case .general: GeneralSettingsView(coordinator: coordinator)
-        case .shortcuts: ShortcutsSettingsView(coordinator: coordinator)
         case .hud: HUDSettingsView(coordinator: coordinator)
         case .inputSources: InputSourcesSettingsView(coordinator: coordinator)
         case .about: AboutView()
