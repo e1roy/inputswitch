@@ -9,6 +9,7 @@ import SwiftUI
 final class SettingsWindowController: NSObject, NSWindowDelegate {
     private let window: NSWindow
     private let navigation: SettingsNavigation
+    var onClose: (() -> Void)?
 
     init(coordinator: AppCoordinator) {
         let navigation = SettingsNavigation()
@@ -58,7 +59,14 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
         window.orderFrontRegardless()
     }
 
+#if DEBUG
+    func closeForTesting() {
+        window.close()
+    }
+#endif
+
     func windowWillClose(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        onClose?()
     }
 }
