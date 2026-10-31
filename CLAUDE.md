@@ -69,6 +69,7 @@ AppSettings / HUDAppearanceStore ◀── Settings UI (@Bindable) ; read by HUD
 - The menu bar icon (`StatusBarIcon`) must stay a single template image
 - `HUDPanel` overrides AppKit's private `_hasActiveAppearance`. Without it the never-key panel renders Liquid Glass flat, with no edge highlights. Re-check this on each new macOS release
 - All user-facing strings live in `Localizable.xcstrings` (en, zh-Hans, zh-Hant, ja)
+- A feature that is added or changed updates its row in [docs/features.md](docs/features.md) and its test rows in [docs/bench/test-plan.md](docs/bench/test-plan.md) in the same change (rules at the top of each file). The `input-switch-bench-test` skill runs that plan and tracks per-metric best/latest in `docs/bench/baseline.md`
 - `xcode-select` may point at CommandLineTools; prefix commands with `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`
 
 ## Important Notes
