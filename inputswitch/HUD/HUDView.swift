@@ -112,19 +112,8 @@ struct HUDOverlayView: View {
     var body: some View {
         if let card = presentation.card {
             card
-                .animation(
-                    reduceMotion || !presentation.isVisible ? nil : .smooth,
-                    value: card.name
-                )
+                .animation(reduceMotion ? nil : .smooth, value: card.name)
                 .scaleEffect(presentation.isVisible || reduceMotion ? 1 : 0.88)
-                .animation(
-                    reduceMotion
-                        ? nil
-                        : presentation.isVisible
-                            ? .spring(duration: 0.38, bounce: 0.3)
-                            : .easeIn(duration: 0.32),
-                    value: presentation.isVisible
-                )
                 .padding(HUDMetrics.shadowInset)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }

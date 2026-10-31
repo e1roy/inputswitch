@@ -3,22 +3,13 @@ import SwiftUI
 
 /// Shows the HUD for an input source on the active screen, then fades it out.
 final class HUDController {
-    private struct FittingKey: Hashable {
-        let name: String
-        let hasIcon: Bool
-        let style: String
-        let size: String
-    }
-
     private let settings: AppSettings
     private let appearance: HUDAppearanceStore
     private let inputSources: InputSourceService
 
     private let presentation = HUDPresentation()
-    private var measuredFittingSizes: [FittingKey: NSSize] = [:]
     private var panel: HUDPanel?
-    private var overlayHostingView: NSHostingView<HUDOverlayView>?
-    private var hideTimer: DispatchSourceTimer?
+    private var hideTask: Task<Void, Never>?
     /// Bumped on every `show`, so a stale fade-out never hides a newer HUD.
     private var generation = 0
 
@@ -40,21 +31,15 @@ final class HUDController {
     }
 
     func show(_ source: InputSource) {
+        hideTask?.cancel()
         generation += 1
+        let showGeneration = generation
 
         let panel = makePanelIfNeeded()
         let newCard = card(for: source)
-        let fittingKey = FittingKey(
-            name: newCard.name,
-            hasIcon: newCard.icon != nil,
-            style: newCard.style.rawValue,
-            size: newCard.size.rawValue
-        )
-        let fitted = measuredFittingSizes[fittingKey]
-            ?? NSHostingView(rootView: newCard.padding(HUDMetrics.shadowInset)).fittingSize
-        measuredFittingSizes[fittingKey] = fitted
+        let fitted = NSHostingView(rootView: newCard.padding(HUDMetrics.shadowInset)).fittingSize
 
-        if panel.isVisible, let hostingView = overlayHostingView {
+        if panel.isVisible, let hostingView = panel.contentView?.subviews.first {
             // Already on screen: keep the same view so the card animates from
             // the previous source (as in the Settings preview). Grow the panel
             // to fit both cards — never shrink mid-animation — and re-center.
@@ -67,59 +52,36 @@ final class HUDController {
             position(panel)
             presentation.card = newCard
         } else {
-            // Appearing: update while hidden, then reuse one hosting view.
-            // HUDOverlayView disables card morphing while hidden, so glass does
-            // not animate from the previous appearance's geometry.
+            // Appearing: use a fresh hosting view so nothing morphs from the
+            // previous card's (hidden) geometry.
             panel.alphaValue = 0
             presentation.isVisible = false
             presentation.card = newCard
-            let hostingView = overlayHostingView
-                ?? NSHostingView(rootView: HUDOverlayView(presentation: presentation))
+            let hostingView = NSHostingView(rootView: HUDOverlayView(presentation: presentation))
             hostingView.sizingOptions = []
             panel.setContentSize(fitted)
             hostingView.frame = NSRect(origin: .zero, size: fitted)
             hostingView.autoresizingMask = [.width, .height]
-            if overlayHostingView == nil {
-                panel.contentView?.subviews = [hostingView]
-                overlayHostingView = hostingView
-            }
+            panel.contentView?.subviews = [hostingView]
             position(panel)
         }
-        if !panel.isVisible {
-            panel.orderFrontRegardless()
-        }
+        panel.orderFrontRegardless()
 
-        if panel.alphaValue < 1 {
-            NSAnimationContext.runAnimationGroup { context in
-                context.duration = 0.18
-                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-                panel.animator().alphaValue = 1
-            }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.18
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            panel.animator().alphaValue = 1
         }
-        if !presentation.isVisible {
+        withAnimation(.spring(duration: 0.38, bounce: 0.3)) {
             presentation.isVisible = true
         }
-        if hideTimer == nil {
-            let timer = DispatchSource.makeTimerSource(queue: .main)
-            timer.setEventHandler { [weak self] in
-                MainActor.assumeIsolated {
-                    self?.hideTimerDidFire()
-                }
-            }
-            timer.schedule(deadline: .distantFuture)
-            timer.resume()
-            hideTimer = timer
-        }
-        hideTimer?.schedule(
-            deadline: .now() + settings.hudDisplayDuration,
-            repeating: .seconds(1),
-            leeway: .milliseconds(10)
-        )
-    }
 
-    private func hideTimerDidFire() {
-        hideTimer?.schedule(deadline: .distantFuture)
-        hide(generation: generation)
+        let duration = settings.hudDisplayDuration
+        hideTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(duration))
+            guard !Task.isCancelled else { return }
+            self?.hide(generation: showGeneration)
+        }
     }
 
     private func hide(generation hideGeneration: Int) {
@@ -135,7 +97,9 @@ final class HUDController {
                 panel.orderOut(nil)
             }
         })
-        presentation.isVisible = false
+        withAnimation(.easeIn(duration: 0.32)) {
+            presentation.isVisible = false
+        }
     }
 
     private func makePanelIfNeeded() -> HUDPanel {

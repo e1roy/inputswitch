@@ -3,7 +3,6 @@ import SwiftUI
 /// Contents of the menu bar extra's dropdown menu.
 struct MenuBarContent: View {
     let coordinator: AppCoordinator
-    @State private var selectedSourceID: String?
 
     private var inputSources: InputSourceService { coordinator.inputSources }
 
@@ -16,9 +15,6 @@ struct MenuBarContent: View {
             }
             .pickerStyle(.inline)
             .labelsHidden()
-            .onAppear {
-                selectedSourceID = inputSources.currentIDForMenu
-            }
         }
 
         Divider()
@@ -34,12 +30,8 @@ struct MenuBarContent: View {
 
     private var currentSourceBinding: Binding<String?> {
         Binding(
-            get: { selectedSourceID },
-            set: { id in
-                guard let id else { return }
-                selectedSourceID = id
-                inputSources.select(id: id)
-            }
+            get: { inputSources.current?.id },
+            set: { id in if let id { inputSources.select(id: id) } }
         )
     }
 }

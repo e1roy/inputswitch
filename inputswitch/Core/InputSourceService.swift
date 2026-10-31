@@ -18,9 +18,6 @@ struct InputSource: Identifiable, Hashable, Sendable {
 final class InputSourceService {
     /// The currently selected input source.
     private(set) var current: InputSource?
-    /// A non-observed snapshot for the menu bar's SwiftUI scene. The menu
-    /// refreshes it when it opens instead of rebuilding on every switch.
-    @ObservationIgnored private(set) var currentIDForMenu: String?
     /// All enabled, selectable keyboard input sources in system order.
     private(set) var sources: [InputSource] = []
 
@@ -53,7 +50,7 @@ final class InputSourceService {
 
     func refresh() {
         sources = Self.enabledTISSources().compactMap { InputSource(tisSource: $0) }
-        updateCurrent(Self.currentTISSource().flatMap { InputSource(tisSource: $0) })
+        current = Self.currentTISSource().flatMap { InputSource(tisSource: $0) }
     }
 
     func select(id: String) {
@@ -77,13 +74,8 @@ final class InputSourceService {
     private func selectionDidChange() {
         guard let newSource = Self.currentTISSource().flatMap({ InputSource(tisSource: $0) }),
               newSource != current else { return }
-        updateCurrent(newSource)
+        current = newSource
         onSelectionChanged?(newSource)
-    }
-
-    func updateCurrent(_ source: InputSource?) {
-        current = source
-        currentIDForMenu = source?.id
     }
 
     private static func enabledTISSources() -> [TISInputSource] {

@@ -44,28 +44,10 @@ final class AppCoordinator {
     func showSettings() {
         loginItem.refresh()
 
-        let controller: SettingsWindowController
-        if let settingsWindow {
-            controller = settingsWindow
-        } else {
-            let newController = SettingsWindowController(coordinator: self)
-            newController.onClose = { [weak self, weak newController] in
-                guard let self, self.settingsWindow === newController else { return }
-                self.settingsWindow = nil
-            }
-            settingsWindow = newController
-            controller = newController
-        }
+        let controller = settingsWindow ?? SettingsWindowController(coordinator: self)
+        settingsWindow = controller
         controller.show()
     }
-
-#if DEBUG
-    var hasSettingsWindow: Bool { settingsWindow != nil }
-
-    func closeSettingsForTesting() {
-        settingsWindow?.closeForTesting()
-    }
-#endif
 
     /// Shows the HUD for `source`, or for the current input source if `nil`.
     func previewHUD(for source: InputSource?) {
