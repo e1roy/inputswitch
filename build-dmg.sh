@@ -3,8 +3,12 @@ set -e
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 APP_NAME="inputswitch"
-VERSION=$(date +%Y%m%d)
+# VERSION / BUILD_NUMBER may be supplied by the caller (CI passes the tag, e.g. 1.2.3).
+VERSION="${VERSION:-$(date +%Y%m%d)}"
+BUILD_NUMBER="${BUILD_NUMBER:-}"
 BUILD_DIR="$PROJECT_DIR/build"
+# ".noindex" keeps Spotlight from listing the build product as a second app.
+DERIVED_DATA_DIR="$BUILD_DIR/dmg.noindex"
 DMG_DIR="$PROJECT_DIR/dist"
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
 VOL_NAME="InputSwitch"
@@ -13,19 +17,28 @@ echo "==> Cleaning previous build..."
 rm -rf "$BUILD_DIR" "$DMG_DIR"
 mkdir -p "$DMG_DIR"
 
-echo "==> Building Universal Binary (arm64 + x86_64)..."
+VERSION_ARGS=()
+if [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    VERSION_ARGS+=("MARKETING_VERSION=$VERSION")
+fi
+if [ -n "$BUILD_NUMBER" ]; then
+    VERSION_ARGS+=("CURRENT_PROJECT_VERSION=$BUILD_NUMBER")
+fi
+
+echo "==> Building Universal Binary (arm64 + x86_64), version $VERSION..."
 xcodebuild -project "$PROJECT_DIR/${APP_NAME}.xcodeproj" \
     -scheme "$APP_NAME" \
     -configuration Release \
-    -derivedDataPath "$BUILD_DIR" \
+    -derivedDataPath "$DERIVED_DATA_DIR" \
     ARCHS="arm64 x86_64" \
     ONLY_ACTIVE_ARCH=NO \
     CODE_SIGN_IDENTITY="-" \
     CODE_SIGNING_REQUIRED=NO \
     CODE_SIGNING_ALLOWED=NO \
+    ${VERSION_ARGS[@]+"${VERSION_ARGS[@]}"} \
     build
 
-APP_PATH=$(find "$BUILD_DIR" -name "${APP_NAME}.app" -type d | head -1)
+APP_PATH=$(find "$DERIVED_DATA_DIR" -name "${APP_NAME}.app" -type d | head -1)
 
 if [ -z "$APP_PATH" ]; then
     echo "❌ Build failed: ${APP_NAME}.app not found"
@@ -57,7 +70,10 @@ hdiutil create -srcfolder "$STAGING_DIR" -volname "$VOL_NAME" -fs HFS+ \
 MOUNT_POINT="/Volumes/$VOL_NAME"
 hdiutil attach "$temp_dmg" -mountpoint "$MOUNT_POINT"
 
-# Set DMG style
+# Set DMG style (needs a Finder session; skipped on CI runners)
+if [ -n "${CI:-}" ] || [ -n "${SKIP_DMG_STYLE:-}" ]; then
+    echo "==> Skipping DMG style (headless)"
+else
 echo "==> Setting DMG style..."
 osascript <<EOF
 tell application "Finder"
@@ -76,6 +92,7 @@ tell application "Finder"
     end tell
 end tell
 EOF
+fi
 
 # Unmount and convert to compressed DMG
 hdiutil detach "$MOUNT_POINT" -force || true
