@@ -27,8 +27,10 @@ xcodebuild -project inputswitch.xcodeproj \
     CODE_SIGNING_ALLOWED=NO \
     build
 
-# Create DMG distribution
+# Create DMG distribution (VERSION=1.2.3 sets MARKETING_VERSION; CI=1 skips Finder styling)
 ./build-dmg.sh
+
+# Release: push a vX.Y.Z tag → .github/workflows/release.yml builds the DMG and publishes the GitHub Release (see the `release` skill)
 
 # Run tests
 xcodebuild test -project inputswitch.xcodeproj -scheme inputswitch -destination 'platform=macOS'
@@ -36,43 +38,46 @@ xcodebuild test -project inputswitch.xcodeproj -scheme inputswitch -destination 
 
 ## Architecture
 
-The app follows a Model-Coordinator pattern with AppDelegate as the central coordinator:
+`AppCoordinator` is the composition root: it owns every service and wires their callbacks. `AppDelegate` owns the coordinator and handles lifecycle (first launch / Dock reopen → `showSettings()`; silent at login).
 
 ### Core Components
 
 | Component | Responsibility |
 |-----------|----------------|
-| [`AppDelegate.swift`](inputswitch/AppDelegate.swift) | Central coordinator that initializes and manages all services |
-| [`HotKeyManager.swift`](inputswitch/HotKeyManager.swift) | Handles keyboard events for input switching and HUD display via NSEvent global monitors |
-| [`InputSourceMonitor.swift`](inputswitch/InputSourceMonitor.swift) | Monitors input source changes using Carbon Framework's TIS API |
-| [`HUDWindowController.swift`](inputswitch/HUDWindowController.swift) | Controls the HUD NSPanel overlay |
-| [`InputSourceColorManager.swift`](inputswitch/InputSourceColorManager.swift) | Singleton managing per-input-source color customization |
+| [`App/AppCoordinator.swift`](inputswitch/App/AppCoordinator.swift) | Creates services, connects events, exposes actions (`showSettings`, `previewHUD`, …) |
+| [`App/AppDelegate.swift`](inputswitch/App/AppDelegate.swift) | Lifecycle; `applicationShouldHandleReopen` opens Settings; detects login-item launch |
+| [`Core/AppSettings.swift`](inputswitch/Core/AppSettings.swift) | `@Observable` preferences persisted to `UserDefaults` (injectable for tests) |
+| [`Core/InputSourceService.swift`](inputswitch/Core/InputSourceService.swift) | TIS wrapper: current/enabled sources, select next, distributed-notification observing |
+| [`Core/KeyGestures.swift`](inputswitch/Core/KeyGestures.swift) | Pure `SoloModifierRecognizer` / `DoubleTapRecognizer` value types (unit-tested) |
+| [`Core/HotKeyMonitor.swift`](inputswitch/Core/HotKeyMonitor.swift) | `NSEvent` global/local monitors → recognizers → callbacks |
+| [`Core/HUDAppearanceStore.swift`](inputswitch/Core/HUDAppearanceStore.swift) | Per-source `HUDTint`, keyed by input source **ID**; migrates legacy name-keyed colors |
+| [`Core/AccessibilityPermission.swift`](inputswitch/Core/AccessibilityPermission.swift) | Polls `AXIsProcessTrusted`; coordinator restarts monitors when granted |
+| [`HUD/HUDController.swift`](inputswitch/HUD/HUDController.swift) | Sizes, positions, animates the `HUDPanel` |
+| [`HUD/HUDView.swift`](inputswitch/HUD/HUDView.swift) | `HUDCard` (Liquid Glass / solid), shared by the overlay and Settings preview |
+| [`Settings/SettingsWindowController.swift`](inputswitch/Settings/SettingsWindowController.swift) | AppKit window hosting `SettingsView`; switches activation policy to `.regular` while open |
 
 ### Data Flow
 
 ```
-User Input (HotKeyManager/ InputSourceMonitor) → AppDelegate Callbacks → HUDWindowController
-Settings Changes (@AppStorage) → UserDefaults → Runtime Behavior
+HotKeyMonitor ──switch──▶ InputSourceService ──selection changed──▶ HUDController
+HotKeyMonitor ──Fn double-tap──────────────────────────────────────▶ HUDController
+AppSettings / HUDAppearanceStore ◀── Settings UI (@Bindable) ; read by HotKeyMonitor & HUDController
 ```
 
-### Key Patterns
+### Conventions
 
-- **Observer/Callback Pattern**: Used for input source changes (`CFNotificationCenter`) and hot key events
-- **Singleton Pattern**: `InputSourceColorManager.shared`
-- **@Observable Pattern**: Swift 6 Observation framework for state management
-- **@AppStorage Pattern**: SwiftUI UserDefaults binding for settings persistence
-
-### Technical Details
-
-- **Input Source Management**: Uses Carbon Framework's TIS (Text Input Sources) API
-- **Event Monitoring**: Global event monitoring via `NSEvent.addGlobalMonitorForEvents`
-- **Solo Key Detection**: Logic to detect "press and release" of modifier keys without combining with other keys
-- **HUD Display**: Floating NSPanel with dynamic sizing on the screen with keyboard focus (`NSScreen.main`)
-- **Minimum Deployment Target**: macOS 15.7+ (as configured in project settings, though README states 14.0+)
-- **Localization**: Supports zh-Hans, zh-Hant, ja, en
+- Swift 6 language mode, `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`; state types use `@Observable`
+- UI follows macOS 27 HIG; see [docs/design-macos27.md](docs/design-macos27.md). Liquid Glass is used **only** for the HUD (functional layer), as untinted `.regular` glass gated by `#available(macOS 26, *)` with a material fallback. Settings content uses standard controls, and the sidebar uses plain SF Symbols (accent-colored). Deployment target is macOS 15.7
+- Keep gesture/ordering logic in pure functions/value types so it stays testable
+- HUD: do not make an `NSHostingView` the panel's direct `contentView` (AppKit throws "too many Update Constraints passes" when it is resized while hidden). Embed it in a container. When the HUD **appears**, create a fresh hosting view (otherwise glass morphs from the previous, hidden geometry). While it is **visible**, keep the view and update `HUDPresentation.card` so the card animates like the Settings preview; the panel only grows during that time, so the morph is never clipped. Measure with a separate hosting view's `fittingSize` (before `sizingOptions = []`)
+- The menu bar icon (`StatusBarIcon`) must stay a single template image
+- `HUDPanel` overrides AppKit's private `_hasActiveAppearance`. Without it the never-key panel renders Liquid Glass flat, with no edge highlights. Re-check this on each new macOS release
+- All user-facing strings live in `Localizable.xcstrings` (en, zh-Hans, zh-Hant, ja)
+- `xcode-select` may point at CommandLineTools; prefix commands with `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`
 
 ## Important Notes
 
 - The app has no dock icon (`LSUIElement = 1` in Info.plist)
-- HUD colors are stored in UserDefaults per input source ID
-- Settings views use SwiftUI with split-based navigation
+- HUD colors are stored in UserDefaults (`HUDTintsBySourceID`, JSON) per input source ID
+- Settings use a `NavigationSplitView` sidebar with grouped `Form` pages (General, Shortcuts, HUD, Input Sources, About)
+- Global key monitoring requires Accessibility permission
