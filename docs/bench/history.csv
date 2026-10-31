@@ -23,3 +23,27 @@ date,commit,build,env,metric_id,variant,value,unit
 2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d0.1,37.0,ms
 2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d1.0,74.4,ms
 2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-APP-05,—,57.4,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-APP-05,—,43.4,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-01,—,31.5,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-02,—,39.5,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-03,—,48.5,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d0.1,35.7,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d0.8,22.5,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d1.0,21.7,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-05,—,1,count
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-06,—,0,count
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-07,—,0,pt
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-08,—,1.0,MB
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-09,—,1040.0,/1000 switches
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-10,—,0,count
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-small,blocked,count/30 s
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-large,blocked,count/30 s
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,solid-small,blocked,count/30 s
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,solid-large,blocked,count/30 s
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-reduce-transparency,blocked,count/30 s
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-12,—,blocked,count/30 s
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-13,—,blocked,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-14,—,blocked,ms/switch
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-15,—,blocked,ms
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-16,—,18.0,%
+2026-11-01,f2a2b73,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-17,—,2373.9,ms
