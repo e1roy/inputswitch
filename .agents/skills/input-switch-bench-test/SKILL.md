@@ -55,7 +55,7 @@ Done when: at least five self-chosen scenarios beyond the plan have been run and
    - **best**: the lowest value. Ties go to the earliest run.
    - **trend**: if \|latest − previous\| ≤ the row's noise floor, `≈`. Otherwise `▲ improved` when latest < previous, or `▼ regressed` when latest > previous. Use `new` when there is no previous value.
    - `⚠` when latest is over budget, whatever the trend.
-3. A `▼` is re-measured twice more before it is reported. It counts only if the median of the three still regresses. Then list the suspect commits with `git log --oneline <previous commit>..HEAD -- inputswitch/`.
+3. A `▼` is re-measured twice more before it is reported — that metric's phase only, not the whole plan. It counts only if the median of the three still regresses. Then list the suspect commits with `git log --oneline <previous commit>..HEAD -- inputswitch/`.
 4. A different `env` from the baseline's env of record → record the values, and compare only against earlier runs with that env. Note it in the report, and leave the env of record unchanged unless the user asks.
 5. Rewrite every row of `docs/bench/baseline.md` from history: Best, Previous, Latest, Δ prev, Trend, the **Last run** line, and the Functional table. Add rows for new IDs and variants, and strike through retired ones.
 

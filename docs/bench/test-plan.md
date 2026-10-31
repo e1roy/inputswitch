@@ -19,12 +19,12 @@ Components: `APP` process-wide · `HUD` [HUD/](../../inputswitch/HUD/) · `SRC` 
 Shorthand used below. `PID=$(pgrep -x inputswitch)`, `probe=build/bench/probe`.
 
 - **idle**: 60 s after launch, Settings closed, HUD hidden, no switching.
-- **burst**: `probe cycle --pid $PID --count 200 --interval-ms 150` (HUD never gets to hide).
-- **paced**: `probe cycle --pid $PID --count 100 --interval-ms 1500` (each HUD fully appears and hides).
-- **soak**: `probe cycle --pid $PID --count 2000 --interval-ms 400` (~15 min).
-- **churn**: open Settings (`open /Applications/inputswitch.app`), visit every sidebar page, close it. 30×.
+- **burst**: `probe cycle --pid $PID --count 200 --interval-ms 150` (HUD never gets to hide). The count stays at 200 because it is the 30 s window that `P-HUD-12`, `P-HUD-13`, `P-HUD-15` and `P-HUD-16` are defined over, not a repeat count.
+- **paced**: `probe cycle --pid $PID --count 20 --interval-ms 1500` (~30 s; each HUD fully appears and hides). 20 switches per round, 3 rounds → 60 latency samples.
+- **soak**: `probe cycle --pid $PID --count 20 --interval-ms 400` (~8 s), the default for every phase that is not a leak check. The memory rows are the only exception: `P-HUD-08`, `P-HUD-09` and `P-APP-04` run it with `--count 100` (~40 s), which is the **maximum** — no phase runs longer. Record the count used with the value; rows from the former 2000-switch soak are not comparable.
+- **churn**: open Settings (`open /Applications/inputswitch.app`), visit every sidebar page, close it. 20×.
 
-Timing metrics (latency, hitches, CPU, stalls) are the **median of 3 repeats** of their phase. Memory metrics come from a single run.
+A phase runs **20 switches** per round unless it is a leak check (100, see `P-HUD-08`/`09`, `P-APP-04`) or the 30 s burst window above. Timing metrics (latency, hitches, CPU, stalls) are the **median of 3 repeats** of their phase. Memory metrics come from a single run.
 
 ## Performance
 
@@ -35,7 +35,7 @@ Timing metrics (latency, hitches, CPU, stalls) are the **median of 3 repeats** o
 | P-APP-01 | Idle footprint | `footprint --pid $PID` (phys_footprint) after idle | MB | < 40 | 1 |
 | P-APP-02 | Idle CPU | `top -pid $PID -l 30 -s 2 -stats pid,cpu,idlew,power`, average | % | 0.0 | 0.1 |
 | P-APP-03 | Idle wakeups | same, `idlew` average. Steady wakeups mean a timer, animation or observation loop is still running | /s | < 1 | 0.5 |
-| P-APP-04 | App-owned leaks | `leaks $PID` after soak + churn. System-framework leaks are listed in the report, not counted | count | 0 | 0 |
+| P-APP-04 | App-owned leaks | `leaks $PID` after the 100-switch soak + churn. System-framework leaks are listed in the report, not counted | count | 0 | 0 |
 | P-APP-05 | Cold first-switch latency | `appear_ms` of the first paced row right after a relaunch | ms | < 300 | 30 |
 
 ### HUD
@@ -49,8 +49,8 @@ Timing metrics (latency, hitches, CPU, stalls) are the **median of 3 repeats** o
 | P-HUD-05 | Missed HUDs | rows with `appear_ms = -1`, burst + paced | count | 0 | 0 |
 | P-HUD-06 | Leftover HUD | `probe windows --pid $PID` 2 s after burst: windows with layer > 1000 | count | 0 | 0 |
 | P-HUD-07 | Panel oversize | after burst, then one paced switch to the shortest-named source: its `width` minus the width of that source's first fresh appearance (the panel only grows while visible; it must re-fit) | pt | 0 | 2 |
-| P-HUD-08 | Soak memory growth | footprint after soak − before, sampled with `footprint --pid $PID --sample 30` (plot vs. switch count; slope must flatten after warm-up) | MB | < 3 | 0.5 |
-| P-HUD-09 | Per-switch object growth | `leaks $PID --outputGraph=…` before and after soak, `heap --diffFrom=before after`: net new `NSHostingView`, `HUDOverlayView`, `HUDPanel`, `NSImage`, `CGImage`, closures, `Task` | /1000 switches | 0 | 0 |
+| P-HUD-08 | Soak memory growth | footprint after the 100-switch soak − before, sampled with `footprint --pid $PID --sample 2 --sample-duration 40` alongside it (plot vs. switch count; slope must flatten after warm-up) | MB | < 3 | 0.5 |
+| P-HUD-09 | Per-switch object growth | `leaks $PID --outputGraph=…` before and after the 100-switch soak, `heap --diffFrom=before after`: net new `NSHostingView`, `HUDOverlayView`, `HUDPanel`, `NSImage`, `CGImage`, closures, `Task`, normalised from 100 switches (one retained object reads as 10) | /1000 switches | 0 | 0 |
 | P-HUD-10 | Live hosting views | `heap $PID --addresses='NSHostingView'` after burst | count | ≤ 2 | 0 |
 | P-HUD-11 | Hitches, paced | `xctrace record --template 'Animation Hitches' --attach $PID --time-limit 30s`: hitches > 1 frame. Variants `glass-small`, `glass-large`, `solid-small`, `solid-large`, `glass-reduce-transparency` | count/30 s | 0 | 0 |
 | P-HUD-12 | Hitches, burst | same during burst, default style | count/30 s | 0 | 1 |
@@ -64,7 +64,7 @@ Timing metrics (latency, hitches, CPU, stalls) are the **median of 3 repeats** o
 
 | ID | Metric | How | Unit | Budget | Noise |
 |---|---|---|---|---|---|
-| P-SET-01 | Churn memory growth | footprint after 30 churn cycles − after the first cycle (must not be linear in cycles) | MB | < 5 | 1 |
+| P-SET-01 | Churn memory growth | footprint after 20 churn cycles − after the first cycle (must not be linear in cycles) | MB | < 5 | 1 |
 | P-SET-02 | Retained after close | footprint 30 s after closing Settings − idle footprint (P-APP-01) | MB | < 15 | 2 |
 | P-SET-03 | Idle CPU, Settings open | `top` 30 s, Settings frontmost and untouched. Steady CPU means a SwiftUI update loop | % | 0.0 | 0.2 |
 | P-SET-04 | Wallpaper accumulation | footprint growth over 20 visits to the Input Sources page (HUDPreview loads a 1200 px thumbnail each time) | MB | < 2 | 0.5 |

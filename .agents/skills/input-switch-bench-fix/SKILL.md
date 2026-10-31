@@ -24,7 +24,7 @@ Done when: one ID is chosen, and its method, budget, noise and guard set are wri
 
 Protect the machine exactly as in `input-switch-bench-test` step 1 (preferences backup, original input source, `./start.sh`, compiled probe), and restore it as in its step 6 when you finish, whatever the outcome.
 
-Measure the target ID with its full test-plan method, 3×, and take the median. Use the same `env` and `build` as the report. Measure each guard ID once.
+Measure the target ID with its full test-plan method, 3 times, and take the median. A timing phase the plan already repeats 3× has its repeats inside each of these runs — do not multiply them again. Use the same `env` and `build` as the report. Measure each guard ID once.
 
 - Within budget and not worse than the baseline's previous value by more than noise → the finding does not reproduce. Stop and report that, with the numbers. Flakiness and environment drift are findings too.
 
@@ -32,7 +32,7 @@ Done when: the target's three before-values and median, and every guard's before
 
 ## 3. Diagnose
 
-Invoke the `diagnosing-bugs` skill. Its feedback loop is the **tightest** form of the target's method that still goes red on this finding. For example, a 200-switch burst plus `heap $PID --addresses=<class>` count instead of a 15-minute soak, or one Time Profiler capture of a single burst. Red means the loop reproduces the over-budget or regressed value.
+Invoke the `diagnosing-bugs` skill. Its feedback loop is the **tightest** form of the target's method that still goes red on this finding: one 20-switch round plus `heap $PID --addresses=<class>` count instead of the plan's soak, or one Time Profiler capture of a single burst. Red means the loop reproduces the over-budget or regressed value. The loop is a red/green signal, not statistics — its `100×` advice is for raising the repro rate of a flake only, and no loop re-runs the plan.
 
 Record in FIX.md the loop command, the ranked hypotheses, and the one the evidence confirmed.
 
