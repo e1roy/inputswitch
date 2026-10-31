@@ -1,1 +1,25 @@
 date,commit,build,env,metric_id,variant,value,unit
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-17,—,782.3,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-small,blocked,count/30 s
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-large,blocked,count/30 s
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,solid-small,blocked,count/30 s
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,solid-large,blocked,count/30 s
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-reduce-transparency,blocked,count/30 s
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-12,—,blocked,count/30 s
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-13,—,blocked,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-14,—,blocked,ms/switch
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-15,—,blocked,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-08,—,4.0,MB
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-09,—,6172.0,/1000 switches
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-01,—,32.5,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-02,—,42.3,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-03,—,70.7,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d0.8,54.9,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-05,—,3,count
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-06,—,0,count
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-07,—,0,pt
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-10,—,1,count
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-16,—,49.5,%
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d0.1,37.0,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d1.0,74.4,ms
+2026-11-01,e81e185,release,"Mac16,8/26B123/3x/2x/2src",P-APP-05,—,57.4,ms
