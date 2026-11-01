@@ -112,7 +112,6 @@ final class HUDController {
         }
         hideTimer?.schedule(
             deadline: .now() + settings.hudDisplayDuration,
-            repeating: .seconds(1),
             leeway: .milliseconds(10)
         )
     }
@@ -133,9 +132,15 @@ final class HUDController {
             MainActor.assumeIsolated {
                 guard let self, self.generation == hideGeneration else { return }
                 panel.orderOut(nil)
+                // The window alpha already faded the card out, so shrinking it
+                // while visible only re-rendered the glass card for the whole
+                // fade and kept the process busy ~300 ms after the HUD was gone
+                // (P-HUD-17). Collapse it off-screen instead, with no animation.
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) { self.presentation.isVisible = false }
             }
         })
-        presentation.isVisible = false
     }
 
     private func makePanelIfNeeded() -> HUDPanel {
