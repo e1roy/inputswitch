@@ -3,9 +3,10 @@ name: Release
 # Pushing a tag like v1.2.3 builds the universal DMG and publishes it as a
 # GitHub Release. Re-pushing an existing tag (after deleting it) rebuilds it.
 # The release body comes from scripts/release-notes.sh: docs/release-notes/<tag>.md
-# when it exists, otherwise the commits since the previous tag. `--generate-notes`
-# is deliberately unused — it only harvests merged PRs, and this repo commits
-# straight to main, so it would publish nothing but the changelog link.
+# when it exists, otherwise the commits since the previous tag. Both are read
+# from the default branch. `--generate-notes` is deliberately unused — it only
+# harvests merged PRs, and this repo commits straight to main, so it would
+# publish nothing but the changelog link.
 on:
   push:
     tags:
@@ -34,6 +35,16 @@ jobs:
           ref: ${{ env.TAG }}
           fetch-depth: 0
 
+      # The notes tooling and the note files are read from the default branch,
+      # not from the tag: a tag cut before this existed (v0.0.5 and older) can
+      # then still be re-released, and a corrected note can be published without
+      # moving the tag. The build itself stays on the tag's own tree.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: tooling
+          fetch-depth: 0
+
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
@@ -55,7 +66,7 @@ jobs:
       - name: Prepare release notes
         run: |
           NOTES="$RUNNER_TEMP/release-notes.md"
-          ./scripts/release-notes.sh "$TAG" > "$NOTES"
+          ./tooling/scripts/release-notes.sh "$TAG" > "$NOTES"
           {
             echo "### Release notes ($TAG)"
             echo
