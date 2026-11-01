@@ -71,3 +71,49 @@ date,commit,build,env,metric_id,variant,value,unit
 2026-11-01,fcb33f6,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-15,—,blocked,ms
 2026-11-01,fcb33f6,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-16,—,16.6,%
 2026-11-01,fcb33f6,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-17,—,2775.8,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-APP-01,—,41,MB
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-APP-02,—,0.0,%
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-APP-03,—,0,/s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-APP-04,—,0,count
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-APP-05,—,40.6,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-01,—,28.8,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-02,—,40.2,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-03,—,44.9,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d0.1,33.2,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d0.8,19.2,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-04,d1.0,20.3,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-05,—,0,count
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-06,—,0,count
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-07,—,0,pt
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-08,—,0,MB
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-09,—,20,/1000 switches
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-10,—,1,count
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-small,blocked,count/30 s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-large,blocked,count/30 s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,solid-small,blocked,count/30 s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,solid-large,blocked,count/30 s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-11,glass-reduce-transparency,blocked,count/30 s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-12,—,blocked,count/30 s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-13,—,blocked,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-14,—,blocked,ms/switch
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-15,—,blocked,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-16,—,18.2,%
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-17,—,1588,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-01,—,0,MB
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-02,—,6,MB
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-03,—,0.0,%
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-04,—,0,MB
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-05,—,blocked,count
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-06,—,blocked,/s
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-07,—,blocked,ms
+2026-11-01,cdeae4a,release,"Mac16,8/26B123/3x/2x/2src",P-SET-08,—,blocked,count
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-01,—,30.6,ms
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-02,—,39.9,ms
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-03,—,47.3,ms
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-05,—,1,count
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-06,—,0,count
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-07,—,0,pt
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-08,—,0,MB
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-09,—,10,/1000 switches
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-16,—,18.6,%
+2026-11-01,cdeae4a-dirty,release,"Mac16,8/26B123/3x/2x/2src",P-HUD-17,—,884,ms
