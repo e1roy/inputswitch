@@ -55,6 +55,77 @@ struct AppSettingsTests {
         defaults.set(2.0, forKey: "HudDisplayDuration") // old default
         #expect(AppSettings(defaults: defaults).hudDisplayDuration == 1.0)
     }
+
+    @Test func glassDefaultsToRegularWithModerateDimming() {
+        let settings = AppSettings(defaults: makeDefaults())
+        #expect(settings.hudGlassVariant == .regular)
+        #expect(settings.hudGlassDimming == HUDGlassLook.defaultDimming)
+        #expect(settings.hudGlassLook == HUDGlassLook(variant: .regular, dimming: HUDGlassLook.defaultDimming))
+    }
+
+    @Test func glassSettingsPersist() {
+        let defaults = makeDefaults()
+        let settings = AppSettings(defaults: defaults)
+        settings.hudGlassVariant = .clear
+        settings.hudGlassDimming = 0.45
+
+        let reloaded = AppSettings(defaults: defaults)
+        #expect(reloaded.hudGlassVariant == .clear)
+        #expect(reloaded.hudGlassDimming == 0.45)
+    }
+
+    @Test func glassDimmingIsClamped() {
+        let settings = AppSettings(defaults: makeDefaults())
+        settings.hudGlassDimming = 5
+        #expect(settings.hudGlassDimming == HUDGlassLook.dimmingRange.upperBound)
+        settings.hudGlassDimming = -1
+        #expect(settings.hudGlassDimming == 0)
+    }
+
+    @Test func invalidGlassPreferencesFallBack() {
+        let defaults = makeDefaults()
+        defaults.set("frosted", forKey: "HUDGlassVariant")
+        defaults.set(9.0, forKey: "HUDGlassDimming")
+        let settings = AppSettings(defaults: defaults)
+        #expect(settings.hudGlassVariant == .regular)
+        #expect(settings.hudGlassDimming == HUDGlassLook.dimmingRange.upperBound)
+    }
+}
+
+@MainActor
+struct HUDGlassLookTests {
+    private let green = HUDTint(red: 0.2, green: 0.7, blue: 0.4, opacity: 0.5)
+
+    @Test func regularGlassKeepsTheSourceTint() {
+        let look = HUDGlassLook(variant: .regular, dimming: 0.6)
+        #expect(look.glassTint(over: nil) == nil)
+        #expect(look.glassTint(over: green) == green)
+    }
+
+    @Test func clearGlassWithoutDimmingKeepsTheSourceTint() {
+        let look = HUDGlassLook(variant: .clear, dimming: 0)
+        #expect(look.glassTint(over: nil) == nil)
+        #expect(look.glassTint(over: green) == green)
+    }
+
+    @Test func clearGlassDimsWithBlack() {
+        let tint = HUDGlassLook(variant: .clear, dimming: 0.3).glassTint(over: nil)
+        #expect(tint == HUDTint(red: 0, green: 0, blue: 0, opacity: 0.3))
+        #expect(tint?.prefersDarkForeground == false)
+    }
+
+    @Test func clearGlassFoldsDimmingUnderTheSourceTint() throws {
+        let tint = try #require(HUDGlassLook(variant: .clear, dimming: 0.4).glassTint(over: green))
+        // 0.5 over black at 0.4: alpha 0.5 + 0.4 × 0.5 = 0.7, color scaled by 0.5 / 0.7.
+        #expect(abs(tint.opacity - 0.7) < 1e-9)
+        #expect(abs(tint.green - 0.7 * 0.5 / 0.7) < 1e-9)
+        #expect(tint.luminance < green.luminance)
+    }
+
+    @Test func dimmingOutsideTheRangeIsClamped() {
+        let tint = HUDGlassLook(variant: .clear, dimming: 3).glassTint(over: nil)
+        #expect(tint?.opacity == HUDGlassLook.dimmingRange.upperBound)
+    }
 }
 
 @MainActor

@@ -7,8 +7,9 @@ A lightweight macOS menu bar app that shows a Liquid Glass HUD whenever your inp
 > Inspired by [isHUD](https://github.com/ghawkgu/isHUD), rewritten from scratch in Swift.
 
 <p align="center">
-  <img src="images/image_abc.png" width="420" alt="HUD showing the ABC input source in Liquid Glass style">
-  <img src="images/image_wx.png" width="420" alt="HUD showing WeChat Input with a custom green tint">
+  <img src="images/image_abc.png" width="280" alt="HUD showing the ABC input source in Liquid Glass style">
+  <img src="images/image_wx.png" width="280" alt="HUD showing WeChat Input with a custom green tint">
+  <img src="images/image_setting.png" width="280" alt="Settings window with per-input-source HUD color controls">
 </p>
 
 ## Contents

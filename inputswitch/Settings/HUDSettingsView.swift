@@ -30,6 +30,23 @@ struct HUDSettingsView: View {
                 Picker("Style", selection: $settings.hudStyle) {
                     ForEach(HUDStyle.allCases) { Text($0.title).tag($0) }
                 }
+                if #available(macOS 26, *), settings.hudStyle == .glass {
+                    Picker("Glass", selection: $settings.hudGlassVariant) {
+                        ForEach(HUDGlassVariant.allCases) { Text($0.title).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    if settings.hudGlassVariant == .clear {
+                        LabeledContent("Dimming") {
+                            HStack(spacing: 10) {
+                                Slider(value: $settings.hudGlassDimming, in: HUDGlassLook.dimmingRange, step: 0.05)
+                                    .frame(maxWidth: 220)
+                                Text(settings.hudGlassDimming, format: .percent.precision(.fractionLength(0)))
+                                    .monospacedDigit()
+                                    .frame(width: 40, alignment: .trailing)
+                            }
+                        }
+                    }
+                }
                 Picker("Size", selection: $settings.hudSize) {
                     ForEach(HUDSize.allCases) { Text($0.title).tag($0) }
                 }

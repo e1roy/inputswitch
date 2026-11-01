@@ -7,8 +7,9 @@
 > 本项目灵感来自 [isHUD](https://github.com/ghawkgu/isHUD)，使用 Swift 从头重写。
 
 <p align="center">
-  <img src="images/image_abc.png" width="420" alt="以液态玻璃样式显示 ABC 输入法的 HUD">
-  <img src="images/image_wx.png" width="420" alt="以自定义绿色显示微信输入法的 HUD">
+  <img src="images/image_abc.png" width="280" alt="以液态玻璃样式显示 ABC 输入法的 HUD">
+  <img src="images/image_wx.png" width="280" alt="以自定义绿色显示微信输入法的 HUD">
+  <img src="images/image_setting.png" width="280" alt="设置窗口中为每个输入法配置 HUD 颜色">
 </p>
 
 ## 目录

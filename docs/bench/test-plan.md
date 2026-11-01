@@ -52,7 +52,7 @@ A phase runs **20 switches** per round unless it is a leak check (100, see `P-HU
 | P-HUD-08 | Soak memory growth | footprint after the 100-switch soak − before, sampled with `footprint --pid $PID --sample 2 --sample-duration 40` alongside it (plot vs. switch count; slope must flatten after warm-up) | MB | < 3 | 0.5 |
 | P-HUD-09 | Per-switch object growth | `leaks $PID --outputGraph=…` before and after the 100-switch soak, `heap --diffFrom=before after`: net new `NSHostingView`, `HUDOverlayView`, `HUDPanel`, `NSImage`, `CGImage`, closures, `Task`, normalised from 100 switches (one retained object reads as 10) | /1000 switches | 0 | 0 |
 | P-HUD-10 | Live hosting views | `heap $PID --addresses='NSHostingView'` after burst | count | ≤ 2 | 0 |
-| P-HUD-11 | Hitches, paced | `xctrace record --template 'Animation Hitches' --attach $PID --time-limit 30s`: hitches > 1 frame. Variants `glass-small`, `glass-large`, `solid-small`, `solid-large`, `glass-reduce-transparency` | count/30 s | 0 | 0 |
+| P-HUD-11 | Hitches, paced | `xctrace record --template 'Animation Hitches' --attach $PID --time-limit 30s`: hitches > 1 frame. Variants `glass-small`, `glass-large`, `glass-clear` (Clear, default dimming), `solid-small`, `solid-large`, `glass-reduce-transparency` | count/30 s | 0 | 0 |
 | P-HUD-12 | Hitches, burst | same during burst, default style | count/30 s | 0 | 1 |
 | P-HUD-13 | Worst hitch | longest hitch across P-HUD-11/12 | ms | < 17 | 4 |
 | P-HUD-14 | Main-thread cost per switch | Time Profiler during burst: `HUDController.show` incl. the `fittingSize` measurement, ÷ switches | ms | < 4 | 0.5 |
@@ -94,6 +94,7 @@ Observe each item for real (probe CSV, `probe windows`, `screencapture -x`, UI s
 | F-HUD-11 | Click-through: clicks on the HUD area reach the window beneath |
 | F-HUD-12 | Reduce Motion removes the scale animation. Under Reduce Transparency and Increase Contrast, glass falls back and stays legible |
 | F-HUD-13 | Liquid Glass has edge highlights (the `_hasActiveAppearance` override still works on this macOS); compare a screenshot with the Settings preview |
+| F-HUD-14 | macOS 26+: Glass Regular / Clear and Dimming 0 / 45 / 60 % render on the HUD as in the Settings preview. Clear refracts the backdrop; at the default 45 % the white text measures ≥ 3:1 over a white backdrop and stays legible over the wallpaper; a source tint stays visible under the dimming. The Glass row is hidden for Solid, and Dimming only shows for Clear |
 
 ### SRC
 
@@ -119,7 +120,7 @@ Observe each item for real (probe CSV, `probe windows`, `screencapture -x`, UI s
 | F-SET-01 | Opening Settings adds a Dock icon and ⌘-Tab entry; closing removes both. 10× quickly |
 | F-SET-02 | Opening from the menu, a Dock reopen, and `open` while already open gives one window, in front, on the current Space |
 | F-SET-03 | Every sidebar page renders, the title follows the page, and the minimum window size has no clipping or overlap |
-| F-SET-04 | Every control persists across a relaunch (style, position, size, icon, duration, menu bar icon, launch at login, tints) |
+| F-SET-04 | Every control persists across a relaunch (style, glass variant, dimming, position, size, icon, duration, menu bar icon, launch at login, tints) |
 | F-SET-05 | Input Sources: row selection updates the preview; presets, custom color, Intensity (disabled at default), Reset, and Show on Screen all work |
 | F-SET-06 | The HUD preview shows the wallpaper and matches the real HUD |
 | F-SET-07 | Localizations zh-Hans, zh-Hant, ja (`-AppleLanguages '(zh-Hans)'`): no untranslated strings, no truncation |
@@ -131,7 +132,7 @@ Observe each item for real (probe CSV, `probe windows`, `screencapture -x`, UI s
 | ID | Check |
 |---|---|
 | F-LIFE-01 | First launch (after `defaults delete github.e1roy.inputswitch`) and a normal relaunch open Settings; a login-item launch stays silent |
-| F-LIFE-02 | Corrupt preferences fall back to defaults without crashing. One at a time with a relaunch each: invalid `HUDStyle`, `HudDisplayDuration` −5 and 99, garbage JSON in `HUDTintsBySourceID`, a tint for a removed source |
+| F-LIFE-02 | Corrupt preferences fall back to defaults without crashing. One at a time with a relaunch each: invalid `HUDStyle`, invalid `HUDGlassVariant`, `HUDGlassDimming` −1 and 9, `HudDisplayDuration` −5 and 99, garbage JSON in `HUDTintsBySourceID`, a tint for a removed source |
 | F-LIFE-03 | Legacy migration: a name-keyed color seeded in `InputSourceColors` moves to `HUDTintsBySourceID` on relaunch |
 | F-LIFE-04 | After sleep/wake, lock/unlock and Fast User Switching, switching still shows the HUD |
 | F-LIFE-05 | After the whole run: no `inputswitch` report in `~/Library/Logs/DiagnosticReports`, and `log show --last 2h --predicate 'process == "inputswitch"'` has no faults (notably "too many Update Constraints passes") |

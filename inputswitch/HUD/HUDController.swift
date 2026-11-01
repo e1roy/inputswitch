@@ -35,7 +35,8 @@ final class HUDController {
             icon: settings.hudShowsIcon ? inputSources.icon(for: source) : nil,
             style: settings.hudStyle,
             tint: appearance.tint(for: source.id),
-            size: settings.hudSize
+            size: settings.hudSize,
+            glass: settings.hudGlassLook
         )
     }
 

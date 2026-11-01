@@ -20,6 +20,8 @@ enum AppLinks {
 enum DefaultsKey {
     static let hudDisplayDuration = "HudDisplayDuration"
     static let hudStyle = "HUDStyle"
+    static let hudGlassVariant = "HUDGlassVariant"
+    static let hudGlassDimming = "HUDGlassDimming"
     static let hudPosition = "HUDPosition"
     static let hudSize = "HUDSize"
     static let hudShowsIcon = "HUDShowsIcon"

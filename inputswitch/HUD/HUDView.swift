@@ -9,8 +9,19 @@ struct HUDCard: View {
     let style: HUDStyle
     let tint: HUDTint?
     let size: HUDSize
+    /// Liquid Glass variant and dimming. Only macOS 26 and later draw it.
+    var glass: HUDGlassLook = .regular
 
     private var scale: CGFloat { size.scale }
+
+    private var glassLook: HUDGlassLook {
+        if #available(macOS 26, *) { glass } else { .regular }
+    }
+
+    /// The tint actually drawn. On glass it includes clear glass's dimming.
+    private var drawnTint: HUDTint? {
+        style == .glass ? glassLook.glassTint(over: tint) : tint
+    }
 
     var body: some View {
         HStack(spacing: 14 * scale) {
@@ -31,13 +42,15 @@ struct HUDCard: View {
         .foregroundStyle(foreground)
         .padding(.horizontal, 32 * scale)
         .frame(minWidth: 168 * scale, minHeight: 80 * scale)
-        .modifier(HUDBackground(style: style, tint: tint))
+        .modifier(HUDBackground(style: style, tint: drawnTint, glassVariant: glassLook.variant))
         .accessibilityElement(children: .combine)
     }
 
     private var foreground: Color {
-        switch (style, tint) {
-        case (.glass, nil): .primary
+        switch (style, drawnTint) {
+        // Clear glass barely changes its backdrop and its dimming is black, so
+        // white reads best in light and dark mode alike.
+        case (.glass, nil): glassLook.variant == .clear ? .white : .primary
         case (.solid, nil): .white
         case (_, let tint?): tint.prefersDarkForeground ? .black.opacity(0.85) : .white
         }
@@ -46,13 +59,15 @@ struct HUDCard: View {
 
 private struct HUDBackground: ViewModifier {
     let style: HUDStyle
+    /// Already resolved: for clear glass it includes the dimming.
     let tint: HUDTint?
+    let glassVariant: HUDGlassVariant
 
     func body(content: Content) -> some View {
         switch style {
         case .glass:
             if #available(macOS 26, *) {
-                content.glassEffect(.regular.tint(tintColor), in: .capsule)
+                content.glassEffect(glassVariant.glass.tint(tintColor), in: .capsule)
             } else {
                 content
                     .background {
@@ -73,6 +88,16 @@ private struct HUDBackground: ViewModifier {
 
     private var tintColor: Color? {
         tint.map { $0.color.opacity($0.opacity) }
+    }
+}
+
+@available(macOS 26, *)
+private extension HUDGlassVariant {
+    var glass: Glass {
+        switch self {
+        case .regular: .regular
+        case .clear: .clear
+        }
     }
 }
 
@@ -136,6 +161,8 @@ struct HUDOverlayView: View {
         HUDCard(name: "微信输入法", icon: nil, style: .glass, tint: nil, size: .medium)
         HUDCard(name: "ABC", icon: nil, style: .glass,
                 tint: HUDTint(red: 0.2, green: 0.7, blue: 0.4, opacity: 0.7), size: .medium)
+        HUDCard(name: "ABC", icon: nil, style: .glass, tint: nil, size: .medium,
+                glass: HUDGlassLook(variant: .clear, dimming: HUDGlassLook.defaultDimming))
         HUDCard(name: "Pinyin", icon: nil, style: .solid, tint: nil, size: .small)
     }
     .padding(40)
