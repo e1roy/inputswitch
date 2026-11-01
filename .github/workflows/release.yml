@@ -2,6 +2,10 @@ name: Release
 
 # Pushing a tag like v1.2.3 builds the universal DMG and publishes it as a
 # GitHub Release. Re-pushing an existing tag (after deleting it) rebuilds it.
+# The release body comes from scripts/release-notes.sh: docs/release-notes/<tag>.md
+# when it exists, otherwise the commits since the previous tag. `--generate-notes`
+# is deliberately unused — it only harvests merged PRs, and this repo commits
+# straight to main, so it would publish nothing but the changelog link.
 on:
   push:
     tags:
@@ -48,6 +52,17 @@ jobs:
           BUILD_NUMBER: ${{ github.run_number }}
         run: ./build-dmg.sh
 
+      - name: Prepare release notes
+        run: |
+          NOTES="$RUNNER_TEMP/release-notes.md"
+          ./scripts/release-notes.sh "$TAG" > "$NOTES"
+          {
+            echo "### Release notes ($TAG)"
+            echo
+            cat "$NOTES"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "NOTES=$NOTES" >> "$GITHUB_ENV"
+
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -57,11 +72,16 @@ jobs:
           shasum -a 256 "$DMG" | tee "$DMG.sha256"
 
           if gh release view "$TAG" >/dev/null 2>&1; then
+            # Re-releasing replaces the body too, otherwise a corrected note
+            # would never reach the page.
+            gh release edit "$TAG" \
+              --title "InputSwitch $TAG" \
+              --notes-file "$NOTES"
             gh release upload "$TAG" "$DMG" "$DMG.sha256" --clobber
           else
             gh release create "$TAG" "$DMG" "$DMG.sha256" \
               --title "InputSwitch $TAG" \
-              --generate-notes \
+              --notes-file "$NOTES" \
               --verify-tag
           fi
           gh release view "$TAG" --json url -q .url >> "$GITHUB_STEP_SUMMARY"

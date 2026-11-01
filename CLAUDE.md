@@ -30,7 +30,9 @@ xcodebuild -project inputswitch.xcodeproj \
 # Create DMG distribution (VERSION=1.2.3 sets MARKETING_VERSION; CI=1 skips Finder styling)
 ./build-dmg.sh
 
-# Release: push a vX.Y.Z tag → .github/workflows/release.yml builds the DMG and publishes the GitHub Release (see the `release` skill)
+# Release: write docs/release-notes/vX.Y.Z.md, commit it, then push the vX.Y.Z tag → .github/workflows/release.yml
+# builds the DMG and publishes the GitHub Release with that file as its body (see the `release` skill)
+# Release notes alone: ./scripts/release-notes.sh vX.Y.Z (note file if present, else commits since the previous tag)
 
 # Run tests
 xcodebuild test -project inputswitch.xcodeproj -scheme inputswitch -destination 'platform=macOS'
