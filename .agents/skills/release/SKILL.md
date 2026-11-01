@@ -33,6 +33,7 @@ CI publishes whatever `scripts/release-notes.sh <tag>` prints: `docs/release-not
 - See what changed: `git log --no-merges --pretty='%h %s' <previous-tag>..HEAD`, and open the diff when a subject does not say what a user would notice.
 - Write `docs/release-notes/<tag>.md` for people updating the app, not for people reading the diff. Lead with what they can now do or what stopped breaking; leave out refactors, tests, bench runs and CI noise. Group under `## New`, `## Fixed`, `## Changed` once there is more than a couple of entries.
 - `./scripts/release-notes.sh <tag>` must print that file, not the fallback.
+- Do not add install instructions: the script always appends the `## Installing` section with the ad-hoc-signing quarantine command (`xattr -dr com.apple.quarantine /Applications/inputswitch.app`), and repeating it only drifts.
 - Commit it to the default branch. CI reads the notes and the script from `main`, not from the tag, so the file has to be pushed before the tag is; and a later commit fixing a note reaches the Release page on the next re-release.
 
 Done when `docs/release-notes/<tag>.md` is pushed to `main` and the script prints it.

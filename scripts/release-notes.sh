@@ -15,6 +15,8 @@ if [ -z "$TAG" ]; then
 fi
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+APP_NAME="inputswitch"
+INSTALL_PATH="/Applications/$APP_NAME.app"
 NOTES_FILE="$REPO_ROOT/docs/release-notes/$TAG.md"
 
 # Failing here beats publishing notes for a tag that does not exist.
@@ -47,11 +49,30 @@ compare_link() {
     fi
 }
 
+# The DMG is signed ad-hoc, so Gatekeeper refuses the first launch. Every
+# release carries the command that gets past it, hand-written notes included,
+# because that is the question every downloader hits.
+install_note() {
+    cat <<EOF
+
+## Installing
+
+The app is signed ad-hoc rather than notarized, so macOS may refuse to open it
+(“Apple could not verify ‘${APP_NAME}’ is free of malware”). Once it is in
+Applications, clear the quarantine flag:
+
+\`\`\`bash
+xattr -dr com.apple.quarantine $INSTALL_PATH
+\`\`\`
+EOF
+}
+
 if [ -f "$NOTES_FILE" ]; then
     cat "$NOTES_FILE"
     if [ -n "$(tail -c 1 "$NOTES_FILE")" ]; then
         printf '\n'
     fi
+    install_note
     compare_link
     exit 0
 fi
@@ -61,6 +82,8 @@ COMMITS="$(git -C "$REPO_ROOT" log --no-merges --pretty=format:'%h%x1f%s' "$RANG
 
 if [ -z "$COMMITS" ]; then
     echo "No changes recorded for $TAG."
+    install_note
+    compare_link
     exit 0
 fi
 
@@ -127,4 +150,5 @@ section() {
     section "Other changes" "$(collect_unmatched)"
 } | sed -e '${/^$/d;}'
 
+install_note
 compare_link
